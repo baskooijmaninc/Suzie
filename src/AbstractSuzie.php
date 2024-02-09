@@ -9,7 +9,7 @@ abstract class AbstractSuzie implements SuzieInterface
     /**
      * @var DataAccessInterface
      */
-    protected DataAccessInterface $dataAccess;
+    protected $dataAccess;
 
     public function __construct(DataAccessInterface $dataAccess)
     {
