@@ -1,11 +1,11 @@
 <?php
 
-namespace KooijmanInc\Suzie\Service;
+namespace KooijmanInc\Service;
 
+use KooijmanInc\Exception\General;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use KooijmanInc\Exception\General;
 
 class SuzieFactory
 {

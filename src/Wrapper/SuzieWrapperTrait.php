@@ -2,7 +2,7 @@
 
 namespace KooijmanInc\Suzie\Wrapper;
 
-use KooijmanInc\Suzie\Service\ServiceInterface;
+use KooijmanInc\Service\ServiceInterface;
 
 trait SuzieWrapperTrait
 {

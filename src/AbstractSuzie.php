@@ -2,7 +2,7 @@
 
 namespace KooijmanInc\Suzie;
 
-use KooijmanInc\Suzie\Service\ServiceInterface;
+use KooijmanInc\Service\ServiceInterface;
 
 abstract class AbstractSuzie implements SuzieInterface
 {
