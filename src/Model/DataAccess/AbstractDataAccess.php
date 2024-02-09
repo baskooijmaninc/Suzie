@@ -41,6 +41,12 @@ abstract class AbstractDataAccess implements DataAccessInterface
     {
         $this->debug = $debug;
         $this->name = get_called_class();
+
+        if (!empty($this->database)) {
+            $this->connectionFactory->setDatabase($this->database);
+        }
+
+        $this->connectionFactory->connect();
     }
 
     public function getTableColumns(): iterable

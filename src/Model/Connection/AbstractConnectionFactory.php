@@ -23,6 +23,7 @@ abstract class AbstractConnectionFactory extends MySql implements ConnectionFact
     public function __construct(string $host, string $user, string $pass, string $port, string $dbname, string $charset, LoggerInterface $logger)
     {
         parent::__construct($host, $user, $pass, $port, $dbname, $charset, $logger);
+
     }
 
     /**

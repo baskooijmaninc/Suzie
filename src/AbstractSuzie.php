@@ -81,9 +81,13 @@ abstract class AbstractSuzie implements SuzieInterface
                 $this->tableColumns = $this->dataAccess->getTableColumns();
             }
         }
+
         $this->form = "form entity";
         $this->entity = "model entity";
 
+        if (isset($e) && $e->isStarted()) {
+            $e->stop();
+        }
 
         return $this;
     }
