@@ -1,12 +1,10 @@
 <?php
 
-namespace KooijmanInc\Service;
+namespace KooijmanInc\Suzie\Service;
 
-use KooijmanInc\Suzie\Wrapper\SuzieWrapperTrait;
 
 abstract class AbstractSuzie implements SuzieInterface
 {
-    use SuzieWrapperTrait;
 
     public function __construct()
     {

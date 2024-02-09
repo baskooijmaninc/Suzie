@@ -1,6 +1,6 @@
 <?php
 
-namespace KooijmanInc\Service;
+namespace KooijmanInc\Suzie\Service;
 
 interface SuzieInterface
 {
