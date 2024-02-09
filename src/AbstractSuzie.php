@@ -93,7 +93,7 @@ abstract class AbstractSuzie implements SuzieInterface
         }
 
         $this->form = $this->dataMapper->rowToFormBuilder($this->tableColumns);
-        $this->entity = $this->dataMapper->rowToEntity($this->tableColumns, false);
+        $this->entity = $this->dataMapper->rowToEntity($this->tableColType('emptyEntity', (array)$this->tableColumns));
 
         if (isset($e) && $e->isStarted()) {
             $e->stop();
@@ -122,5 +122,27 @@ abstract class AbstractSuzie implements SuzieInterface
         $this->debug = $debug;
 
         return $this;
+    }
+
+    private function tableColType(string $type, array $columns): array
+    {
+        if ($type === 'emptyEntity') {
+            foreach ($columns as $column) {
+                if (isset($column['Field'])) {
+                    if ($column['Default'] === "UNIXTIMESTAMP") {
+                        $column['Default'] = time();
+                    }
+                    if ($column['Key'] === 'PRI' && $column['Field'] !== 'id') {
+
+                        $tableColumns['id'] = $column['Default'];
+                        $tableColumns['customId'] = $column['Field'];
+                    } else {
+                        $tableColumns[$column['Field']] = $column['Default'];
+                    }
+                }
+            }
+        }
+
+        return $tableColumns ?? [];
     }
 }

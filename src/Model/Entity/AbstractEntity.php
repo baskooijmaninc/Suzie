@@ -22,8 +22,16 @@ abstract class AbstractEntity implements EntityInterface
         $this->suzie = $suzie;
     }
 
+    protected function setId(mixed $id): EntityInterface
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function setRaw(string $property, $value): EntityInterface
     {
+
         $this->{$property} = $value;
 
         return $this;

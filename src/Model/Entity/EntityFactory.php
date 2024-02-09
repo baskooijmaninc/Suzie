@@ -27,7 +27,11 @@ class EntityFactory
     protected function fillNormal(EntityInterface &$entity, array &$data): EntityInterface
     {
         foreach ($data as $k => $v) {
-            $entity->{$k} = $v;
+            if ($k === 'id') {
+
+            } else {
+                $entity->{$k} = $v;
+            }
         }
 
         return $entity;
