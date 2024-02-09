@@ -2,7 +2,7 @@
 
 namespace KooijmanInc\Suzie\Service;
 
-use KooijmanInc\Exception\General;
+use KooijmanInc\Suzie\Exception\General;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
