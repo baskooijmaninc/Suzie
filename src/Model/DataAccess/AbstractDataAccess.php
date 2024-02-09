@@ -11,7 +11,7 @@ abstract class AbstractDataAccess implements DataAccessInterface
 
     protected $debug;
 
-    public function __construct(protected ConnectionFactoryInterface $connectionFactory, bool $debug = false)
+    public function __construct(bool $debug = false)
     {
         $this->debug = $debug;
     }
