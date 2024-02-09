@@ -7,13 +7,50 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractDataAccess implements DataAccessInterface
 {
-    protected $database;
+    /**
+     * @var string
+     */
+    protected string $database;
 
-    protected $debug;
+    /**
+     * @var string
+     */
+    protected string $table;
 
-    public function __construct(bool $debug = false)
+    /**
+     * @var array
+     */
+    protected array $tableColumns;
+
+    /**
+     * @var bool
+     */
+    protected bool $debug;
+
+    /**
+     * @var string
+     */
+    protected string $name;
+
+    public function __construct(protected ConnectionFactoryInterface $connectionFactory, bool $debug = false)
     {
         $this->debug = $debug;
+        $this->name = get_called_class();
+    }
+
+    public function getTableColumns(): iterable
+    {
+        if ($this->tableColumns === null) {
+            $data = $this->connectionFactory->fetchAll("SHOW COLUMNS FROM `$this->table`");
+
+            if ($this->debug === true) {
+                $this->logger->debug('Called ' . $this->name . '::get "{where}".', compact('data'));
+            }
+
+            $this->tableColumns = $data;
+        }
+
+        return $this->tableColumns;
     }
 
     public function setLogger(LoggerInterface $logger = null): DataAccessInterface

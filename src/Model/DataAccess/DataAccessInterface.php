@@ -7,6 +7,11 @@ use Psr\Log\LoggerInterface;
 interface DataAccessInterface
 {
     /**
+     * @return iterable
+     */
+    public function getTableColumns(): iterable;
+
+    /**
      * @param LoggerInterface|null $logger
      * @return DataAccessInterface
      */

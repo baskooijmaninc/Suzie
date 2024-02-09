@@ -16,4 +16,22 @@ interface ConnectionFactoryInterface
      * @param LoggerInterface $logger
      */
     public function __construct(string $host, string $user, string $pass, string $port, string $dbname, string $charset, LoggerInterface $logger);
+
+    /**
+     * @return void
+     */
+    public function connect(): void;
+
+    /**
+     * @param string $database
+     * @return void
+     */
+    public function setDatabase(string $database): void;
+
+    /**
+     * @param string $query
+     * @param array $binds
+     * @return array
+     */
+    public function fetchAll(string $query, array $binds = []): array;
 }
