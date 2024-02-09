@@ -15,9 +15,9 @@ use KooijmanInc\Suzie\SuzieInterface;
 abstract class AbstractDataMapper implements DataMapperInterface
 {
     /**
-     * @var EntityInterface
+     * @var EntityFactory
      */
-    protected EntityInterface $entityFactory;
+    protected EntityFactory $entityFactory;
 
     /**
      * @var FormBuilderFactory
@@ -64,7 +64,7 @@ abstract class AbstractDataMapper implements DataMapperInterface
 
     public function rowToEntity(iterable $row, bool $raw = true, bool $checkSetup = true): EntityInterface
     {
-        $form = $this->EntityFactory->create($this->suzie, $this->formBuilderClassName, $row, $raw);
+        $form = $this->entityFactory->create($this->suzie, $this->entityClassName, $row, $raw);
 
         return $form;
     }

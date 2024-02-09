@@ -93,7 +93,7 @@ abstract class AbstractSuzie implements SuzieInterface
         }
 
         $this->form = $this->dataMapper->rowToFormBuilder($this->tableColumns);
-        $this->entity = "model entity";
+        $this->entity = $this->dataMapper->rowToEntity($this->tableColumns, false);
 
         if (isset($e) && $e->isStarted()) {
             $e->stop();
