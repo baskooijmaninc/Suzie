@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Exception;
+namespace KooijmanInc\Exception;
 
 use Exception;
 
