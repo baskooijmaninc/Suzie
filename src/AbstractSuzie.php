@@ -1,6 +1,6 @@
 <?php
 
-namespace KooijmanInc\Suzie\Service;
+namespace KooijmanInc\Suzie;
 
 
 use KooijmanInc\Suzie\Model\DataAccess\DataAccessInterface;
