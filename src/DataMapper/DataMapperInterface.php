@@ -2,7 +2,10 @@
 
 namespace KooijmanInc\Suzie\DataMapper;
 
+use KooijmanInc\Suzie\FormBuilder\FormBuilderFactory;
 use KooijmanInc\Suzie\FormBuilder\FormBuilderInterface;
+use KooijmanInc\Suzie\Model\Entity\EntityFactory;
+use KooijmanInc\Suzie\Model\Entity\EntityInterface;
 use KooijmanInc\Suzie\SuzieInterface;
 
 /**
@@ -12,9 +15,10 @@ use KooijmanInc\Suzie\SuzieInterface;
 interface DataMapperInterface
 {
     /**
-     * @param ...$entityOrForm
+     * @param FormBuilderFactory $formBuilderFactory
+     * @param EntityFactory $entityFactory
      */
-    public function __construct($entityOrForm);
+    public function __construct(FormBuilderFactory $formBuilderFactory, EntityFactory $entityFactory);
 
     public function setEntityClassName($entityClassName);
 
@@ -33,4 +37,12 @@ interface DataMapperInterface
      * @return FormBuilderInterface
      */
     public function rowToFormBuilder(array $row, bool $raw = true, bool $checkSetup = true): FormBuilderInterface;
+
+    /**
+     * @param array $row
+     * @param bool $raw
+     * @param bool $checkSetup
+     * @return FormBuilderInterface
+     */
+    public function rowToEntity(array $row, bool $raw = true, bool $checkSetup = true): EntityInterface;
 }

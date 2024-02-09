@@ -4,6 +4,8 @@ namespace KooijmanInc\Suzie\DataMapper;
 
 use KooijmanInc\Suzie\FormBuilder\FormBuilderFactory;
 use KooijmanInc\Suzie\FormBuilder\FormBuilderInterface;
+use KooijmanInc\Suzie\Model\Entity\EntityFactory;
+use KooijmanInc\Suzie\Model\Entity\EntityInterface;
 use KooijmanInc\Suzie\SuzieInterface;
 
 /**
@@ -12,12 +14,15 @@ use KooijmanInc\Suzie\SuzieInterface;
  */
 abstract class AbstractDataMapper implements DataMapperInterface
 {
-    protected $entityFactory;
+    /**
+     * @var EntityInterface
+     */
+    protected EntityInterface $entityFactory;
 
     /**
-     * @var ?FormBuilderFactory
+     * @var FormBuilderFactory
      */
-    protected ?FormBuilderFactory $formBuilderFactory;
+    protected FormBuilderFactory $formBuilderFactory;
 
     /**
      * @var SuzieInterface
@@ -29,13 +34,13 @@ abstract class AbstractDataMapper implements DataMapperInterface
     protected string $formBuilderClassName;
 
     /**
-     * @param ...$EntityOrForm
+     * @param FormBuilderFactory $formBuilderFactory
+     * @param EntityFactory $entityFactory
      */
-    public function __construct($EntityOrForm)
+    public function __construct(FormBuilderFactory $formBuilderFactory, EntityFactory $entityFactory)
     {
-        if (isset($entityOrForm) && $entityOrForm instanceof FormBuilderFactory) {
-
-        }
+        $this->formBuilderFactory = $formBuilderFactory;
+        $this->entityFactory = $entityFactory;
     }
 
     /**
@@ -49,10 +54,17 @@ abstract class AbstractDataMapper implements DataMapperInterface
         return $this;
     }
 
-    public function rowToFormBuilder(array $row, bool $raw = true, bool $checkSetup = true): FormBuilderInterface
+    public function rowToFormBuilder(iterable $row, bool $raw = true, bool $checkSetup = true): FormBuilderInterface
     {
 
         $form = $this->formBuilderFactory->create($this->suzie, $this->formBuilderClassName, $row, $raw);
+
+        return $form;
+    }
+
+    public function rowToEntity(iterable $row, bool $raw = true, bool $checkSetup = true): EntityInterface
+    {
+        $form = $this->EntityFactory->create($this->suzie, $this->formBuilderClassName, $row, $raw);
 
         return $form;
     }

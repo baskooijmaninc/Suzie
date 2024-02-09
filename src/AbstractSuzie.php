@@ -66,6 +66,8 @@ abstract class AbstractSuzie implements SuzieInterface
 
         $this->dataAccess->setLogger($this->logger);
         $this->dataAccess->setDebug($this->debug);
+
+        $this->dataMapper->setSuzie($this);
     }
 
     /**
@@ -90,7 +92,7 @@ abstract class AbstractSuzie implements SuzieInterface
             }
         }
 
-        $this->form = "form entity";
+        $this->form = $this->dataMapper->rowToFormBuilder($this->tableColumns);
         $this->entity = "model entity";
 
         if (isset($e) && $e->isStarted()) {

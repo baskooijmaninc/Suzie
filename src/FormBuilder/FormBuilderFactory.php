@@ -6,7 +6,7 @@ use KooijmanInc\Suzie\SuzieInterface;
 
 class FormBuilderFactory
 {
-    public function create(SuzieInterface $suzie, $formBuilderClassName, array $data = [], bool $raw = false)
+    public function create(SuzieInterface $suzie, $formBuilderClassName, iterable $data = [], bool $raw = false)
     {
         $formBuilder = new $formBuilderClassName($suzie);
 
