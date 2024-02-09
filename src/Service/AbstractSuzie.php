@@ -4,7 +4,7 @@ namespace KooijmanInc\Service;
 
 use KooijmanInc\Suzie\Wrapper\SuzieWrapperTrait;
 
-abstract class AbstractService implements ServiceInterface
+abstract class AbstractSuzie implements SuzieInterface
 {
     use SuzieWrapperTrait;
 
