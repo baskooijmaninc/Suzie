@@ -11,9 +11,16 @@ abstract class AbstractSuzie implements SuzieInterface
      */
     protected $dataAccess;
 
-    public function __construct(DataAccessInterface $dataAccess)
+    protected $debug;
+
+    /**
+     * @param DataAccessInterface $dataAccess
+     * @param bool $debug
+     */
+    public function __construct(DataAccessInterface $dataAccess, bool $debug = false)
     {
         $this->dataAccess = $dataAccess;
+        $this->debug = $debug;
         dump($this);
     }
 }
