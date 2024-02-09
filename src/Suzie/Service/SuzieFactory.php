@@ -1,6 +1,6 @@
 <?php
 
-namespace KooijmanInc\Suzie;
+namespace KooijmanInc\Suzie\Service;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
