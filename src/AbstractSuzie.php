@@ -35,9 +35,9 @@ abstract class AbstractSuzie implements SuzieInterface
     protected Stopwatch $stopwatch;
 
     /**
-     * @var array
+     * @var iterable
      */
-    protected array $tableColumns;
+    protected iterable $tableColumns;
 
     protected $form;
 
@@ -78,7 +78,7 @@ abstract class AbstractSuzie implements SuzieInterface
 
         if ($data === []) {
             if (empty($this->tableColumns)) {
-
+                $this->tableColumns = $this->dataAccess->getTableColumns();
             }
         }
         $this->form = "form entity";

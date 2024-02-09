@@ -28,6 +28,11 @@ abstract class AbstractDataAccess implements DataAccessInterface
     protected bool $debug;
 
     /**
+     * @var LoggerInterface
+     */
+    protected LoggerInterface $logger;
+
+    /**
      * @var string
      */
     protected string $name;
@@ -40,7 +45,7 @@ abstract class AbstractDataAccess implements DataAccessInterface
 
     public function getTableColumns(): iterable
     {
-        if ($this->tableColumns === null) {
+        if (empty($this->tableColumns)) {
             $data = $this->connectionFactory->fetchAll("SHOW COLUMNS FROM `$this->table`");
 
             if ($this->debug === true) {
