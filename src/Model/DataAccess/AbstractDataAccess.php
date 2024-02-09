@@ -4,8 +4,10 @@ namespace KooijmanInc\Suzie\Model\DataAccess;
 
 abstract class AbstractDataAccess implements DataAccessInterface
 {
-    public function __construct()
-    {
+    protected $debug;
 
+    public function __construct(bool $debug = false)
+    {
+        $this->debug = $debug;
     }
 }
