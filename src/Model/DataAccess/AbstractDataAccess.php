@@ -7,6 +7,8 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractDataAccess implements DataAccessInterface
 {
+    protected $database;
+
     protected $debug;
 
     public function __construct(ConnectionFactoryInterface $connectionFactory, bool $debug = false)
