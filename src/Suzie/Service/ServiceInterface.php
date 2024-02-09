@@ -2,7 +2,7 @@
 
 namespace KooijmanInc\Suzie\Service;
 
-interface SuzieInterface
+interface ServiceInterface
 {
 
 }

@@ -5,14 +5,14 @@ namespace KooijmanInc\Suzie\Service;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use src\Exception\General;
+use KooijmanInc\Exception\General;
 
 class SuzieFactory
 {
     /**
      * @var array
      */
-    public static $services = [];
+    public static array $services = [];
 
     /**
      * @var ContainerInterface
