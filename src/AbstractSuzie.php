@@ -2,6 +2,7 @@
 
 namespace KooijmanInc\Suzie;
 
+use KooijmanInc\Suzie\DataMapper\DataMapperInterface;
 use KooijmanInc\Suzie\Model\DataAccess\DataAccessInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -13,6 +14,11 @@ abstract class AbstractSuzie implements SuzieInterface
      * @var DataAccessInterface
      */
     protected DataAccessInterface $dataAccess;
+
+    /**
+     * @var DataMapperInterface
+     */
+    protected DataMapperInterface $dataMapper;
 
     /**
      * @var bool
@@ -45,12 +51,14 @@ abstract class AbstractSuzie implements SuzieInterface
 
     /**
      * @param DataAccessInterface $dataAccess
+     * @param DataMapperInterface $dataMapper
      * @param LoggerInterface|null $logger
      * @param bool $debug
      */
-    public function __construct(DataAccessInterface $dataAccess, LoggerInterface $logger = null, bool $debug = false)
+    public function __construct(DataAccessInterface $dataAccess, DataMapperInterface $dataMapper, LoggerInterface $logger = null, bool $debug = false)
     {
         $this->dataAccess = $dataAccess;
+        $this->dataMapper = $dataMapper;
         $this->logger = $logger;
         $this->debug = $debug;
 
