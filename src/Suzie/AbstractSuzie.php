@@ -8,9 +8,9 @@ abstract class AbstractSuzie implements SuzieInterface
 {
     protected ServiceInterface $service;
 
-    public function __construct()
+    public function __construct(ServiceInterface $service)
     {
-        //$this->service = $service;
+        $this->service = $service;
         dump($this);
     }
 
