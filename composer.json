@@ -35,5 +35,8 @@
     },
     "config": {
         "optimize-autoloader": true
-    }
+    },
+    "bin": [
+        "bin/suzie"
+    ]
 }
