@@ -1,0 +1,1 @@
+<?phpnamespace KooijmanInc\Suzie\Console\Command\Make\Generator;use KooijmanInc\Suzie\Model\Connection\ConnectionFactory;class ClassGenerator{    public function __construct(ConnectionFactory $connectionFactory, string $modelPath)    {    }}
