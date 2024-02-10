@@ -1,0 +1,1 @@
+<?phpnamespace KooijmanInc\Suzie\Exception;class Duplicate extends General{}
