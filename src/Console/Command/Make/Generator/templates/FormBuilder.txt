@@ -1,0 +1,19 @@
+namespace %1$s;
+
+use KooijmanInc\Suzie\FormBuilder\AbstractFormBuilder;
+use %2$s\Suzie\%3$s\%4$s as Suzie;
+
+/**
+ * @property Suzie $suzie
+ * @property $id
+ */
+class %4$s extends AbstractFormBuilder
+{
+    /**
+     * @param Suzie $suzie
+     */
+    public function __construct(Suzie $suzie)
+    {
+        parent::__construct($suzie);
+    }
+}

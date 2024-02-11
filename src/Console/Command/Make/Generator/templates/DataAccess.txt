@@ -1,0 +1,16 @@
+namespace %1$s;
+
+use KooijmanInc\Suzie\Model\DataAccess\AbstractDataAccess;
+
+class %2$s extends AbstractDataAccess
+{
+    /**
+     * @var string
+     */
+    protected string $database = '%3$s';
+
+    /**
+     * @var string
+     */
+    protected string $table = '%4$s';
+}

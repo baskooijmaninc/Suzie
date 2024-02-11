@@ -1,0 +1,19 @@
+namespace %1$s;
+
+use KooijmanInc\Suzie\Model\Entity\AbstractEntity;
+use %2$s\Suzie\%3$s\%4$s as Suzie;
+
+/**
+ * @property Suzie $suzie
+ * @property $id
+ */
+class %4$s extends AbstractEntity
+{
+    /**
+     * @param Suzie $suzie
+     */
+    public function __construct(Suzie $suzie)
+    {
+        parent::__construct($suzie);
+    }
+}

@@ -1,0 +1,21 @@
+namespace %1$s;
+
+use KooijmanInc\Suzie\AbstractSuzie;
+use KooijmanInc\Suzie\DataMapper\DataMapper;
+use Psr\Log\LoggerInterface;
+
+class %2$s extends AbstractSuzie
+{
+    /**
+     * @param %3$s\DataAccess\%4$s\%5$s $dataAccess
+     * @param DataMapper $dataMapper
+     * @param LoggerInterface|null $logger
+     */
+    public function __construct(%3$s\DataAccess\%4$s\%5$s $dataAccess, DataMapper $dataMapper, LoggerInterface $logger = null)
+    {
+        $dataMapper->setEntityClassName(%3$s\Entity\%4$s\%5$s::class);
+        $dataMapper->setFormBuilderClassName(%3$s\FormBuilder\%4$s\%5$s::class);
+
+        parent::__construct($dataAccess, $dataMapper, $logger);
+    }
+}
