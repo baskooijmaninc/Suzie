@@ -2,6 +2,7 @@
 
 namespace KooijmanInc\Suzie\Model\Connection;
 
+use App\Helper\Common;
 use mysqli;
 use mysqli_stmt;
 use Psr\Log\LoggerInterface;
@@ -90,6 +91,6 @@ class MySql
      */
     private function setConnection(string $db): mysqli
     {
-        return new mysqli($this->host, $this->user, $this->pass, $db, $this->port, $this->charset);
+        return new mysqli(Common::decrypt($this->host), Common::decrypt($this->user), Common::decrypt($this->pass), $db, Common::decrypt($this->port), Common::decrypt($this->charset));
     }
 }
