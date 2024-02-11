@@ -31,7 +31,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
         $this->suzie = $suzie;
     }
 
-    public function setColumns(string $columns)
+    public function setColumns(array $columns)
     {
 
     }
