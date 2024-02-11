@@ -26,6 +26,11 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     protected SuzieInterface $suzie;
 
     /**
+     * @var array
+     */
+    protected array $toBeSetInputs = [];
+
+    /**
      * @var FormElements\FormElementsInterface
      */
     protected $formElements;
@@ -35,7 +40,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
         $this->uuid = uniqid(str_replace('\\', '-', get_class($this)) . '-', true);
         $this->suzie = $suzie;
         $this->formElements = new FormElements\FormElementsFactory($this->uuid);
-        dump($this->formElements);
+        dump($this->suzie);
     }
 
     public function setColumns(array $columns)
@@ -45,13 +50,13 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
         return $this;
     }
 
-//    public function __set(string $name, $value)
-//    {
-//        if (property_exists($this, $name)) {
-//            dump('Found: ' . $name);
-//        }
-//        dump("__set: ", $name, $value);
-//    }
+    public function __set(string $name, $value)
+    {
+        if (property_exists($this, $name)) {
+            dump('Found: ' . $name);
+        }
+        dump("__set: ", $name, $value);
+    }
 
     public function &__get(string $name)
     {
@@ -86,6 +91,15 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     public function offsetUnset(mixed $offset): void
     {
         // TODO: Implement offsetUnset() method.
+    }
+
+    public function toBeSetInputs(array $inputs): void
+    {
+        foreach ($inputs as $key => $value) {
+            if (!isset($this->toBeSetInputs[$key])) {
+                $this->toBeSetInputs[] = $key;
+            }
+        }
     }
 
     protected function setValue(mixed $value)
