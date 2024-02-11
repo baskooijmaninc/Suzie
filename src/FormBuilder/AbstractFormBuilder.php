@@ -41,11 +41,15 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     public function setColumns(array $columns)
     {
         $this->{$columns['Field']} = $this->setValue($columns);
+
+        return $this;
     }
 
     public function __set(string $name, $value)
     {
-
+        if (property_exists($this, $name)) {
+            dump('Found: ' . $name);
+        }
         dump("__set: ", $name, $value);
     }
 
