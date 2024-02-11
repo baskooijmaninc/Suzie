@@ -23,7 +23,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     /**
      * @var SuzieInterface
      */
-    protected SuzieInterface $suzie;
+    protected $suzie;
 
     /**
      * @var array
@@ -40,12 +40,12 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
         $this->uuid = uniqid(str_replace('\\', '-', get_class($this)) . '-', true);
         $this->suzie = $suzie;
         $this->formElements = new FormElements\FormElementsFactory($this->uuid);
-        dump($this->suzie);
     }
 
     public function setColumns(array $columns)
     {
         $this->{$columns['Field']} = $this->setValue($columns);
+
 
         return $this;
     }
@@ -54,8 +54,12 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     {
         if (property_exists($this, $name)) {
             dump('Found: ' . $name);
+        } elseif (in_array($name, $this->toBeSetInputs, true)) {
+            return $this->{$name} = $value;
+        } else {
+            dump("__set Still to do: ", $name, $value, $this->toBeSetInputs);
         }
-        dump("__set: ", $name, $value);
+
     }
 
     public function &__get(string $name)
@@ -105,7 +109,6 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     protected function setValue(mixed $value)
     {
         if (is_array($value) && array_key_exists('Field', $value)) {
-            dump($value);
             if ($value['Default'] === 'UNIXTIMESTAMP') {
                 $value = time();
             } else {

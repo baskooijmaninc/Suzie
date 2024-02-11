@@ -6,6 +6,8 @@ use KooijmanInc\Suzie\SuzieInterface;
 
 class FormBuilderFactory
 {
+    protected array $protectedNames = ['toBeSetInputs', 'formElements'];
+
     public function create(SuzieInterface $suzie, $formBuilderClassName, iterable $data = [], bool $raw = false)
     {
         $formBuilder = new $formBuilderClassName($suzie);
@@ -19,8 +21,16 @@ class FormBuilderFactory
 
     private function fillBase(FormBuilderInterface &$formBuilder, array &$data)
     {
+        foreach ($data as $inputs) {
+            $toBeSetInputs[$inputs['Field']] = $inputs['Default'];
+        }
+        $formBuilder->toBeSetInputs($toBeSetInputs ?? []);
         foreach ($data as $columns) {
-            $formBuilder->setColumns($columns);
+            if (isset($columns['Field']) && !in_array($columns['Field'], $this->protectedNames)) {
+                $formBuilder->setColumns($columns);
+            } elseif (!in_array($columns['Field'], $this->protectedNames)) {
+                dump('factory still to do: ', $columns);
+            }
         }
 
         return $formBuilder;
