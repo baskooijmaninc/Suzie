@@ -10,7 +10,9 @@ class FormBuilderFactory
     {
         $formBuilder = new $formBuilderClassName($suzie);
 
-        $this->fillBase($formBuilder, $data);
+        if (isset($data[0]['Field'])) {
+            $this->fillBase($formBuilder, $data);
+        }
 
         return $formBuilder;
     }
@@ -18,7 +20,6 @@ class FormBuilderFactory
     private function fillBase(FormBuilderInterface &$formBuilder, array &$data)
     {
         foreach ($data as $columns) {
-            dump($columns);
             $formBuilder->setColumns($columns);
         }
 

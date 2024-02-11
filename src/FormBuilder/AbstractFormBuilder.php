@@ -40,7 +40,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
 
     public function setColumns(array $columns)
     {
-        $this->{$columns['Field']} = "setElement";
+        $this->{$columns['Field']} = $this->setValue($columns);
     }
 
     public function __set(string $name, $value)
@@ -82,5 +82,19 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     public function offsetUnset(mixed $offset): void
     {
         // TODO: Implement offsetUnset() method.
+    }
+
+    protected function setValue(mixed $value)
+    {
+        if (is_array($value) && array_key_exists('Field', $value)) {
+            dump($value);
+            if ($value['Default'] === 'UNIXTIMESTAMP') {
+                $value = time();
+            } else {
+                $value = $value['Default'];
+            }
+        }
+
+        return $value ?? null;
     }
 }
