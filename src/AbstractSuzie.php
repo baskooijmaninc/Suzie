@@ -45,7 +45,7 @@ abstract class AbstractSuzie implements SuzieInterface
      */
     protected iterable $tableColumns;
 
-    protected $form;
+    public $form;
 
     protected $entity;
 
