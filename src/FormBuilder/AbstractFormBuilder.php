@@ -2,7 +2,12 @@
 
 namespace KooijmanInc\Suzie\FormBuilder;
 
+use KooijmanInc\Suzie\Exception\NotSupported;
+use KooijmanInc\Suzie\FormBuilder\FormElements\FormElementsFactory;
+use KooijmanInc\Suzie\FormBuilder\FormElements\FormElementsInterface;
 use KooijmanInc\Suzie\SuzieInterface;
+use ReturnTypeWillChange;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Class AbstractFormBuilder
@@ -46,7 +51,6 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     {
         $this->{$columns['Field']} = $this->setValue($columns);
 
-
         return $this;
     }
 
@@ -54,7 +58,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     {
         if (property_exists($this, $name)) {
             dump('Found: ' . $name);
-        } elseif (in_array($name, $this->toBeSetInputs, true)) {
+        } elseif (array_key_exists($name, $this->toBeSetInputs)) {
             return $this->{$name} = $value;
         } else {
             dump("__set Still to do: ", $name, $value, $this->toBeSetInputs);
@@ -65,16 +69,34 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     public function &__get(string $name)
     {
         dump("__get: ", $name);
+        $accessor = "get" . ucfirst($name);
+
+        if (method_exists($this, $accessor) && is_callable([$this, $accessor])) {
+            $value = $this->{$accessor}();
+            return $value;
+        } elseif (array_key_exists($name, $this->toBeSetInputs)) {
+            $value = $this->getInputOptions($name, $this->toBeSetInputs[$name]);
+            return $value;
+        }
+        dump($value);
+        throw new NotSupported("__get ($name) is not supported!");
+
     }
 
-    public function __call($name, $arguments)
+    public function __isset(string $name): bool
     {
-        dump("__call: ", $name, $arguments);
+        if (in_array($name, $this->toBeSetInputs)) {
+            return true;
+        }
+dump($name);
+        return (bool)property_exists($this, $name);
     }
 
-    public function jsonSerialize(): mixed
+    #[Required]
+    #[ReturnTypeWillChange]
+    public function jsonSerialize(): null
     {
-        return $this;
+        return $this->toFriendlyArray();
     }
 
     public function offsetExists(mixed $offset): bool
@@ -94,16 +116,51 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
 
     public function offsetUnset(mixed $offset): void
     {
-        // TODO: Implement offsetUnset() method.
+        dump('offsetUnset: ', $offset);
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return FormElementsFactory
+     * @throws NotSupported
+     */
+    public function __call($name, $arguments)
+    {
+        if (empty($arguments) && ($this->__isset($name))) {
+            dump("__call: ", $name, $arguments);
+            return $this->__get($name);
+        }
+
+        throw new NotSupported("__call ($name with arguments: ".implode($arguments).") is not supported!");
+    }
+
+    public function getInputOptions(string $name, array $attributes): FormElementsInterface
+    {
+        return $this->formElements->getInputOptions($name, $attributes);
     }
 
     public function toBeSetInputs(array $inputs): void
     {
         foreach ($inputs as $key => $value) {
             if (!isset($this->toBeSetInputs[$key])) {
-                $this->toBeSetInputs[] = $key;
+                $this->toBeSetInputs[$key] = $value;
             }
         }
+    }
+
+    public function toFriendlyArray()
+    {
+        return $this->toArray(true);
+    }
+
+    public function toArray(bool $hideObjects = false)
+    {
+        $data = get_object_vars($this);
+
+        dump($data);
+
+        return $data;
     }
 
     protected function setValue(mixed $value)

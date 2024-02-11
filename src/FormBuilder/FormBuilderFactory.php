@@ -22,7 +22,7 @@ class FormBuilderFactory
     private function fillBase(FormBuilderInterface &$formBuilder, array &$data)
     {
         foreach ($data as $inputs) {
-            $toBeSetInputs[$inputs['Field']] = $inputs['Default'];
+            $toBeSetInputs[$inputs['Field']] = $inputs;
         }
         $formBuilder->toBeSetInputs($toBeSetInputs ?? []);
         foreach ($data as $columns) {

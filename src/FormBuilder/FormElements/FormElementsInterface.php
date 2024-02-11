@@ -8,5 +8,5 @@ namespace KooijmanInc\Suzie\FormBuilder\FormElements;
  */
 interface FormElementsInterface
 {
-
+    public function getInputOptions(string $name, array $attributes);
 }

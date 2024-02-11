@@ -14,4 +14,10 @@ abstract class AbstractFormElements implements FormElementsInterface
     {
         $this->id = $uuid."-formElements";
     }
+
+    public function getInputOptions(string $name, array $attributes)
+    {
+        dump($name, $attributes);
+        return $this;
+    }
 }

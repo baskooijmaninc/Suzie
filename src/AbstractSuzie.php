@@ -3,6 +3,7 @@
 namespace KooijmanInc\Suzie;
 
 use KooijmanInc\Suzie\DataMapper\DataMapperInterface;
+use KooijmanInc\Suzie\FormBuilder\FormBuilderInterface;
 use KooijmanInc\Suzie\Model\DataAccess\DataAccessInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -45,6 +46,9 @@ abstract class AbstractSuzie implements SuzieInterface
      */
     protected iterable $tableColumns;
 
+    /**
+     * @var FormBuilderInterface
+     */
     public $form;
 
     protected $entity;
