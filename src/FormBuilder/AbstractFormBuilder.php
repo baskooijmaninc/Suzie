@@ -45,13 +45,13 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
         return $this;
     }
 
-    public function __set(string $name, $value)
-    {
-        if (property_exists($this, $name)) {
-            dump('Found: ' . $name);
-        }
-        dump("__set: ", $name, $value);
-    }
+//    public function __set(string $name, $value)
+//    {
+//        if (property_exists($this, $name)) {
+//            dump('Found: ' . $name);
+//        }
+//        dump("__set: ", $name, $value);
+//    }
 
     public function &__get(string $name)
     {
