@@ -11,6 +11,18 @@ class FormBuilderFactory
         dump($data);
         $formBuilder = new $formBuilderClassName($suzie);
 
+        $this->fillBase($formBuilder, $data);
+
+        return $formBuilder;
+    }
+
+    private function fillBase(FormBuilderInterface &$formBuilder, array &$data)
+    {
+        foreach ($data as $column => $attributes) {
+            dump($column, $attributes);
+            $formBuilder->setColumns($column, $attributes);
+        }
+
         return $formBuilder;
     }
 }
