@@ -2,7 +2,7 @@
 
 namespace KooijmanInc\Suzie\Model\Connection;
 
-use App\Helper\Common;
+use KooijmanInc\Suzie\Helper\Common;
 use Psr\Log\LoggerInterface;
 
 abstract class AbstractConnectionFactory extends MySql implements ConnectionFactoryInterface

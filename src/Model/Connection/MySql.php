@@ -2,7 +2,7 @@
 
 namespace KooijmanInc\Suzie\Model\Connection;
 
-use App\Helper\Common;
+use KooijmanInc\Suzie\Helper\Common;
 use mysqli;
 use mysqli_stmt;
 use Psr\Log\LoggerInterface;

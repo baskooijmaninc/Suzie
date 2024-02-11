@@ -25,25 +25,38 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
      */
     protected SuzieInterface $suzie;
 
+    /**
+     * @var FormElements\FormElementsInterface
+     */
+    protected $formElements;
+
     public function __construct(SuzieInterface $suzie)
     {
         $this->uuid = uniqid(str_replace('\\', '-', get_class($this)) . '-', true);
         $this->suzie = $suzie;
+        $this->formElements = new FormElements\FormElementsFactory($this->uuid);
+        dump($this->formElements);
     }
 
     public function setColumns(array $columns)
     {
-        $this->{$columns['Field']} = '';
+        $this->{$columns['Field']} = "setElement";
     }
 
     public function __set(string $name, $value)
     {
+
         dump("__set: ", $name, $value);
     }
 
     public function &__get(string $name)
     {
         dump("__get: ", $name);
+    }
+
+    public function __call($name, $arguments)
+    {
+        dump("__call: ", $name, $arguments);
     }
 
     public function jsonSerialize(): mixed
