@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helper;
+namespace KooijmanInc\Suzie\Helper;
 
 class Common
 {

@@ -33,7 +33,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
 
     public function setColumns(array $columns)
     {
-        $this->{$columns['field']} = '';
+        $this->{$columns['Field']} = '';
     }
 
     public function __set(string $name, $value)
