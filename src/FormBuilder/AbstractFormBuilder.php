@@ -3,8 +3,8 @@
 namespace KooijmanInc\Suzie\FormBuilder;
 
 use KooijmanInc\Suzie\Exception\NotSupported;
-use KooijmanInc\Suzie\FormBuilder\FormElements\FormElementsFactory;
-use KooijmanInc\Suzie\FormBuilder\FormElements\FormElementsInterface;
+use KooijmanInc\Suzie\FormBuilder\FormElements\FormCollector;
+use KooijmanInc\Suzie\FormBuilder\FormElements\FormCollectorInterface;
 use KooijmanInc\Suzie\SuzieInterface;
 use ReturnTypeWillChange;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -36,7 +36,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     protected array $toBeSetInputs = [];
 
     /**
-     * @var FormElements\FormElementsInterface
+     * @var FormCollectorInterface
      */
     protected $formElements;
 
@@ -44,7 +44,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     {
         $this->uuid = uniqid(str_replace('\\', '-', get_class($this)) . '-', true);
         $this->suzie = $suzie;
-        $this->formElements = new FormElements\FormElementsFactory($this->uuid);
+        $this->formElements = new FormCollector($this->uuid);
     }
 
     public function setColumns(array $columns)
@@ -78,7 +78,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
             $value = $this->getInputOptions($name, $this->toBeSetInputs[$name]);
             return $value;
         }
-        dump($value);
+        //dump($value);
         throw new NotSupported("__get ($name) is not supported!");
 
     }
@@ -122,7 +122,7 @@ dump($name);
     /**
      * @param $name
      * @param $arguments
-     * @return FormElementsFactory
+     * @return FormCollector
      * @throws NotSupported
      */
     public function __call($name, $arguments)
@@ -135,7 +135,7 @@ dump($name);
         throw new NotSupported("__call ($name with arguments: ".implode($arguments).") is not supported!");
     }
 
-    public function getInputOptions(string $name, array $attributes): FormElementsInterface
+    public function getInputOptions(string $name, array $attributes): FormCollectorInterface
     {
         return $this->formElements->getInputOptions($name, $attributes);
     }
