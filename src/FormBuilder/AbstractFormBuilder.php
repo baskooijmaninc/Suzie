@@ -28,7 +28,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     /**
      * @var SuzieInterface
      */
-    protected $suzie;
+    protected SuzieInterface $suzie;
 
     /**
      * @var array
@@ -38,25 +38,41 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     /**
      * @var FormCollectorInterface
      */
-    protected $formElements;
+    protected $formCollector;
+
+    /**
+     * @var
+     */
+    protected $form;
+
+    /**
+     * @var
+     */
+    protected $completeForm;
 
     public function __construct(SuzieInterface $suzie)
     {
         $this->uuid = uniqid(str_replace('\\', '-', get_class($this)) . '-', true);
         $this->suzie = $suzie;
-        $this->formElements = new FormCollector($this->uuid);
+        $this->formCollector = new FormCollector($this->uuid);
+    }
+
+    public function getForm()
+    {
+        return $this->formCollector->form();
     }
 
     public function setColumns(array $columns)
     {
         $this->{$columns['Field']} = $this->setValue($columns);
-        $this->{$columns['Field']}();
 
         return $this;
     }
 
     public function __set(string $name, $value)
     {
+        $accessor = "set".ucfirst($name);
+
         if (property_exists($this, $name)) {
             dump('Found: ' . $name);
         } elseif (array_key_exists($name, $this->toBeSetInputs)) {
@@ -69,7 +85,6 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
 
     public function &__get(string $name)
     {
-        dump("__get: ", $name);
         $accessor = "get" . ucfirst($name);
 
         if (method_exists($this, $accessor) && is_callable([$this, $accessor])) {
@@ -78,6 +93,8 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
         } elseif (array_key_exists($name, $this->toBeSetInputs)) {
             $value = $this->getInputOptions($name, $this->toBeSetInputs[$name]);
             return $value;
+        } else {
+            dump("__get: ", $name);
         }
         //dump($value);
         throw new NotSupported("__get ($name) is not supported!");
@@ -93,7 +110,6 @@ dump($name);
         return (bool)property_exists($this, $name);
     }
 
-    #[Required]
     #[ReturnTypeWillChange]
     public function jsonSerialize(): null
     {
@@ -102,7 +118,7 @@ dump($name);
 
     public function offsetExists(mixed $offset): bool
     {
-        return true;
+        return $this->__isset($offset);
     }
 
     public function offsetGet(mixed $offset): mixed
@@ -138,7 +154,7 @@ dump($name);
 
     public function getInputOptions(string $name, array $attributes): FormCollectorInterface
     {
-        return $this->formElements->getInputOptions($name, $attributes);
+        return $this->formCollector->getInputOptions($name, $attributes);
     }
 
     public function toBeSetInputs(array $inputs): void

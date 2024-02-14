@@ -49,7 +49,7 @@ abstract class AbstractSuzie implements SuzieInterface
     /**
      * @var FormBuilderInterface
      */
-    public $form;
+    public $formBuilder;
 
     protected $entity;
 
@@ -96,7 +96,7 @@ abstract class AbstractSuzie implements SuzieInterface
             }
         }
 
-        $this->form = $this->dataMapper->rowToFormBuilder($this->tableColumns);
+        $this->formBuilder = $this->dataMapper->rowToFormBuilder($this->tableColumns);
         $this->entity = $this->dataMapper->rowToEntity($this->tableColType('emptyEntity', (array)$this->tableColumns));
 
         if (isset($e) && $e->isStarted()) {

@@ -1,0 +1,1 @@
+<?phpnamespace KooijmanInc\Suzie\FormBuilder\FormParts\Form;interface FormInterface{    public function getFormAttributes();    public function __set(string $name, $value);    public function &__get(string $name);}

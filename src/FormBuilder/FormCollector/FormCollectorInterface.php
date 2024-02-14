@@ -8,5 +8,7 @@ namespace KooijmanInc\Suzie\FormBuilder\FormCollector;
  */
 interface FormCollectorInterface
 {
+    public function form();
+
     public function getInputOptions(string $name, array $attributes);
 }
