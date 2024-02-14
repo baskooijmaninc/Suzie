@@ -206,9 +206,10 @@ dump($name);
     /**
      * @return FormInterface
      */
-    public function getForm(): FormInterface
+    public function getForm(): static
     {dump('activated');
-        return $this->formCollector->form();
+        $this->form = $this->formCollector->form();
+        return $this;
     }
 
     private function formStart(): string
