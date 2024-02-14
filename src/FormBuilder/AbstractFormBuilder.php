@@ -5,6 +5,7 @@ namespace KooijmanInc\Suzie\FormBuilder;
 use KooijmanInc\Suzie\Exception\NotSupported;
 use KooijmanInc\Suzie\FormBuilder\FormCollector\FormCollector;
 use KooijmanInc\Suzie\FormBuilder\FormCollector\FormCollectorInterface;
+use KooijmanInc\Suzie\FormBuilder\FormParts\Form\FormInterface;
 use KooijmanInc\Suzie\SuzieInterface;
 use ReturnTypeWillChange;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -41,9 +42,9 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     protected $formCollector;
 
     /**
-     * @var
+     * @var FormInterface
      */
-    protected $form;
+    protected FormInterface $form;
 
     /**
      * @var
