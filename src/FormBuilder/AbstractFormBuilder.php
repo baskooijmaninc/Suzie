@@ -39,7 +39,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     /**
      * @var FormCollectorInterface
      */
-    protected $formCollector;
+    protected FormCollectorInterface $formCollector;
 
     /**
      * @var FormInterface
@@ -61,6 +61,11 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     public function form()
     {
         return $this->formCollector->form();
+    }
+
+    public function getForm()
+    {
+        return $this->completeForm;
     }
 
     public function setColumns(array $columns)
