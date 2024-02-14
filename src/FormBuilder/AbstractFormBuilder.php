@@ -47,9 +47,9 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     protected FormInterface $form;
 
     /**
-     * @var
+     * @var string
      */
-    protected $completeForm;
+    protected string $completeForm = "";
 
     public function __construct(SuzieInterface $suzie)
     {
@@ -65,9 +65,8 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
 
     public function getForm()
     {
-        return $this->completeForm;
+        return $this->completeForm = "hi";
     }
-
     public function setColumns(array $columns)
     {
         $this->{$columns['Field']} = $this->setValue($columns);
