@@ -2,14 +2,14 @@
 
 namespace KooijmanInc\Suzie\FormBuilder;
 
+use KooijmanInc\Suzie\FormBuilder\FormCollector\FormCollectorInterface;
+
 /**
  * Interface FormBuilderInterface
  *
  */
-interface FormBuilderInterface extends \JsonSerializable, \ArrayAccess
+interface FormBuilderInterface extends FormCollectorInterface, \JsonSerializable, \ArrayAccess
 {
-    public function form();
-
     public function getFormArray();
 
     public function getCompleteForm();

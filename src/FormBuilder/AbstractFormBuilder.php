@@ -58,11 +58,6 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
         $this->formCollector = new FormCollector($this->uuid);
     }
 
-    public function form()
-    {
-        return $this->formCollector->form();
-    }
-
     public function getFormArray()
     {
         return [
@@ -100,7 +95,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     {
         $accessor = "get" . ucfirst($name);
 
-        if ((method_exists($this, $accessor) && is_callable([$this, $accessor])) || (method_exists($this, $name) && is_callable([$this, $name]))) {
+        if ((method_exists($this, $accessor) && is_callable([$this, $accessor]))) {
             $value = $this->{$accessor}();
             return $value;
         } elseif (array_key_exists($name, $this->toBeSetInputs)) {
@@ -158,12 +153,13 @@ dump($name);
     public function __call($name, $arguments)
     {
         $accessor = "get" . ucfirst($name);
+
         if (empty($arguments) && ($this->__isset($name) || $this->__isset($accessor))) {
             dump("__call: ", $name, $arguments);
             return $this->__get($name);
         }
 
-        throw new NotSupported("__call ($name with arguments: ".implode($arguments).") is not supported!");
+        throw new NotSupported("__call ($name) with arguments: (".implode($arguments).") is not supported!");
     }
 
     public function getInputOptions(string $name, array $attributes): FormCollectorInterface
@@ -205,6 +201,11 @@ dump($name);
         }
 
         return $value ?? null;
+    }
+
+    protected function getForm()
+    {dump('activated');
+        return $this->formCollector->form();
     }
 
     private function formStart(): string

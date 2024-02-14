@@ -33,4 +33,14 @@ abstract class AbstractFormCollector implements FormCollectorInterface
         dump($name, $attributes);
         return $this;
     }
+
+    public function __set(string $name, $value)
+    {
+        // TODO: Implement __set() method.
+    }
+
+    public function &__get(string $name)
+    {
+        // TODO: Implement __get() method.
+    }
 }
