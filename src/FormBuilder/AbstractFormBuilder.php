@@ -207,7 +207,7 @@ dump($name);
      * @return FormInterface
      */
     public function getForm(): FormInterface
-    {
+    {dump('testing');
         $this->form = $this->formCollector->form();
         return $this->form;
     }

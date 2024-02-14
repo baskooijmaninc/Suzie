@@ -2,6 +2,8 @@
 
 namespace KooijmanInc\Suzie;
 
+use KooijmanInc\Suzie\FormBuilder\FormBuilderInterface;
+use KooijmanInc\Suzie\Model\Entity\EntityInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 interface SuzieInterface
@@ -10,7 +12,7 @@ interface SuzieInterface
      * @param array $data
      * @return AbstractSuzie
      */
-    public function create(array $data = []): static;
+    public function create(array $data = []): AbstractSuzie;
 
     /**
      * @param Stopwatch $stopwatch
