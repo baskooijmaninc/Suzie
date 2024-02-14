@@ -203,7 +203,7 @@ dump($name);
         return $value ?? null;
     }
 
-    protected function getForm()
+    public function getForm()
     {dump('activated');
         return $this->formCollector->form();
     }
