@@ -203,7 +203,10 @@ dump($name);
         return $value ?? null;
     }
 
-    public function getForm()
+    /**
+     * @return FormInterface
+     */
+    public function getForm(): FormInterface
     {dump('activated');
         return $this->formCollector->form();
     }
