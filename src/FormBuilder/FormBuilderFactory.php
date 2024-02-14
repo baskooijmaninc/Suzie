@@ -11,6 +11,7 @@ class FormBuilderFactory
     public function create(SuzieInterface $suzie, $formBuilderClassName, iterable $data = [], bool $raw = false)
     {
         $formBuilder = new $formBuilderClassName($suzie);
+        $formBuilder->form = $formBuilder->form();
 
         if (isset($data[0]['Field'])) {
             $this->fillBase($formBuilder, $data);

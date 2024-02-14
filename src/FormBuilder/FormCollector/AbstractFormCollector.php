@@ -3,6 +3,7 @@
 namespace KooijmanInc\Suzie\FormBuilder\FormCollector;
 
 use KooijmanInc\Suzie\FormBuilder\FormParts\Form\Form;
+use KooijmanInc\Suzie\FormBuilder\FormParts\Form\FormInterface;
 
 /**
  * Class AbstractFormElements
@@ -17,7 +18,10 @@ abstract class AbstractFormCollector implements FormCollectorInterface
         $this->id = $uuid."-formCollector";
     }
 
-    public function form()
+    /**
+     * @return FormInterface
+     */
+    public function form(): FormInterface
     {
         $form = new Form($this->id);
 

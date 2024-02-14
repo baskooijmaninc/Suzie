@@ -63,10 +63,18 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
         return $this->formCollector->form();
     }
 
-    public function getForm()
+    public function getFormArray()
+    {
+        return [
+            $this->formStart()
+        ];
+    }
+
+    public function getCompleteForm()
     {
         return $this->completeForm = "hi";
     }
+
     public function setColumns(array $columns)
     {
         $this->{$columns['Field']} = $this->setValue($columns);
@@ -79,7 +87,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
         $accessor = "set".ucfirst($name);
 
         if (property_exists($this, $name)) {
-            dump('Found: ' . $name);
+            return $this->{$name}();
         } elseif (array_key_exists($name, $this->toBeSetInputs)) {
             return $this->{$name} = $value;
         } else {
@@ -197,5 +205,11 @@ dump($name);
         }
 
         return $value ?? null;
+    }
+
+    private function formStart(): string
+    {
+        dump($this->formCollector->form());
+        return "<form>";
     }
 }
