@@ -149,7 +149,8 @@ dump($name);
      */
     public function __call($name, $arguments)
     {
-        if (empty($arguments) && ($this->__isset($name))) {
+        $accessor = "get" . ucfirst($name);
+        if (empty($arguments) && ($this->__isset($name) || $this->__isset($accessor))) {
             dump("__call: ", $name, $arguments);
             return $this->__get($name);
         }
