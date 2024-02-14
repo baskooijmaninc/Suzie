@@ -58,7 +58,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
         $this->formCollector = new FormCollector($this->uuid);
     }
 
-    public function getForm()
+    public function form()
     {
         return $this->formCollector->form();
     }
@@ -88,7 +88,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     {
         $accessor = "get" . ucfirst($name);
 
-        if (method_exists($this, $accessor) && is_callable([$this, $accessor])) {
+        if ((method_exists($this, $accessor) && is_callable([$this, $accessor])) || (method_exists($this, $name) && is_callable([$this, $name]))) {
             $value = $this->{$accessor}();
             return $value;
         } elseif (array_key_exists($name, $this->toBeSetInputs)) {

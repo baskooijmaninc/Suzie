@@ -8,7 +8,7 @@ namespace KooijmanInc\Suzie\FormBuilder;
  */
 interface FormBuilderInterface extends \JsonSerializable, \ArrayAccess
 {
-    public function getForm();
+    public function form();
 
     public function setColumns(array $columns);
 
