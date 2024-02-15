@@ -35,7 +35,7 @@ interface DataMapperInterface
      * @param bool $checkSetup
      * @return FormBuilderInterface
      */
-    public function rowToFormBuilder(array $row, bool $checkSetup = true): FormBuilderInterface;
+    public function rowToFormBuilder(array $row, array $base = [], bool $checkSetup = true): FormBuilderInterface;
 
     /**
      * @param array $row

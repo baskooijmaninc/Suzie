@@ -1,1 +1,1 @@
-<?phpnamespace KooijmanInc\Suzie\FormBuilder\FormParts\Form;interface FormInterface{}
+<?phpnamespace KooijmanInc\Suzie\FormBuilder\FormParts\Form;use KooijmanInc\Suzie\FormBuilder\FormCollector\FormCollectorInterface;interface FormInterface extends FormCollectorInterface{    /**     * @param string $name     */    public function &__get(string $name);}
