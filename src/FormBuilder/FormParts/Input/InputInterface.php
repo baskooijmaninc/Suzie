@@ -1,0 +1,1 @@
+<?phpnamespace KooijmanInc\Suzie\FormBuilder\FormParts\Input;use KooijmanInc\Suzie\FormBuilder\FormCollector\FormCollectorInterface;interface InputInterface extends FormCollectorInterface{}

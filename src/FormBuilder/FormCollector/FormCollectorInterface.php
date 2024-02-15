@@ -1,1 +1,1 @@
-<?phpnamespace KooijmanInc\Suzie\FormBuilder\FormCollector;interface FormCollectorInterface{    /**     * @param string $name     */    public function &__get(string $name);}
+<?phpnamespace KooijmanInc\Suzie\FormBuilder\FormCollector;interface FormCollectorInterface{    /**     * @param string $name     */    public function &__get(string $name);    /**     * @param string $name     * @param $value     */    public function __set(string $name, $value);}

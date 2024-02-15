@@ -1,0 +1,1 @@
+<?phpnamespace KooijmanInc\Suzie\FormBuilder\FormParts\Input;class Input extends AbstractInput{}
