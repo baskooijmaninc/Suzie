@@ -59,9 +59,13 @@ abstract class AbstractDataMapper implements DataMapperInterface
         return $this;
     }
 
-    public function rowToFormBuilder(iterable $row, bool $raw = true, bool $checkSetup = true): FormBuilderInterface
+    public function rowToFormBuilder(iterable $row, bool $checkSetup = true): FormBuilderInterface
     {
-        $form = $this->formBuilderFactory->create($this->suzie, $this->formBuilderClassName, $row, $raw);
+        foreach ($row as $inputs) {
+            $toBeSetInputs[$inputs['Field']] = $inputs;
+        }
+
+        $form = $this->formBuilderFactory->create($this->suzie, $this->formBuilderClassName, $toBeSetInputs ?? []);
 
         return $form;
     }

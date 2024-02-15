@@ -5,6 +5,7 @@ namespace KooijmanInc\Suzie;
 use KooijmanInc\Suzie\DataMapper\DataMapperInterface;
 use KooijmanInc\Suzie\FormBuilder\FormBuilderInterface;
 use KooijmanInc\Suzie\Model\DataAccess\DataAccessInterface;
+use KooijmanInc\Suzie\Model\Entity\EntityInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -75,10 +76,11 @@ abstract class AbstractSuzie implements SuzieInterface
     }
 
     /**
-     * @return $this
+     * @param array $data
+     * @return AbstractSuzie
      */
     #[Required]
-    public function create(array $data = []): static
+    public function create(array $data = []): AbstractSuzie
     {
         $requestId = uniqid();
 

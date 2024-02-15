@@ -1,0 +1,1 @@
+<?phpnamespace KooijmanInc\Suzie\Object\FormObject;interface ObjectInterface{}

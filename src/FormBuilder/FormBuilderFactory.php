@@ -1,39 +1,1 @@
-<?php
-
-namespace KooijmanInc\Suzie\FormBuilder;
-
-use KooijmanInc\Suzie\SuzieInterface;
-
-class FormBuilderFactory
-{
-    protected array $protectedNames = ['toBeSetInputs', 'formElements'];
-
-    public function create(SuzieInterface $suzie, $formBuilderClassName, iterable $data = [], bool $raw = false)
-    {
-        $formBuilder = new $formBuilderClassName($suzie);
-        $formBuilder->form = $formBuilder->form();
-
-        if (isset($data[0]['Field'])) {
-            $this->fillBase($formBuilder, $data);
-        }
-
-        return $formBuilder;
-    }
-
-    private function fillBase(FormBuilderInterface &$formBuilder, array &$data)
-    {
-        foreach ($data as $inputs) {
-            $toBeSetInputs[$inputs['Field']] = $inputs;
-        }
-        $formBuilder->toBeSetInputs($toBeSetInputs ?? []);
-        foreach ($data as $columns) {
-            if (isset($columns['Field']) && !in_array($columns['Field'], $this->protectedNames)) {
-                $formBuilder->setColumns($columns);
-            } elseif (!in_array($columns['Field'], $this->protectedNames)) {
-                dump('factory still to do: ', $columns);
-            }
-        }
-
-        return $formBuilder;
-    }
-}
+<?phpnamespace KooijmanInc\Suzie\FormBuilder;use KooijmanInc\Suzie\FormBuilder\FormCollector\FormCollector;use KooijmanInc\Suzie\SuzieInterface;class FormBuilderFactory{    public function create(SuzieInterface $suzie, string $formBuilderClassName, array $data = [])    {        $formBuilder = new $formBuilderClassName($suzie);        $formBuilder->formCollector = new FormCollector($formBuilder->uuid);        $formBuilder->toBeSetInputs($data);        $formBuilder->completeForm();        dump($formBuilder);        return $formBuilder;    }}

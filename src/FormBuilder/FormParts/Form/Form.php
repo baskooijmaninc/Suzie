@@ -1,1 +1,1 @@
-<?phpnamespace KooijmanInc\Suzie\FormBuilder\FormParts\Form;class Form extends AbstractForm{}
+<?phpnamespace KooijmanInc\Suzie\FormBuilder\FormParts\Form;class Form extends AbstractForm{}
