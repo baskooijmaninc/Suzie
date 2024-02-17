@@ -90,4 +90,9 @@ class Common
             return number_format($number, 2, '.', ',');
         }
     }
+
+    public static function toObject($array)
+    {
+        return json_decode(json_encode($array));
+    }
 }
