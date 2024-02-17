@@ -1,1 +1,1 @@
-<?phpnamespace KooijmanInc\Suzie\Object\FormObject;interface ObjectInterface{}
+<?phpnamespace KooijmanInc\Suzie\Object\FormObject;interface ObjectInterface extends \IteratorAggregate{}
