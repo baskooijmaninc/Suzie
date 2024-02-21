@@ -8,6 +8,7 @@ use KooijmanInc\Suzie\Model\Entity\EntityFactory;
 use KooijmanInc\Suzie\Model\Entity\EntityInterface;
 use KooijmanInc\Suzie\SuzieInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Interface DataMapperInterface
@@ -20,7 +21,7 @@ interface DataMapperInterface
      * @param EntityFactory $entityFactory
      * @param TranslatorInterface $translator
      */
-    public function __construct(FormBuilderFactory $formBuilderFactory, EntityFactory $entityFactory, TranslatorInterface $translator);
+    public function __construct(FormBuilderFactory $formBuilderFactory, EntityFactory $entityFactory, TranslatorInterface $translator, RequestStack $requestStack);
 
     public function setEntityClassName($entityClassName);
 

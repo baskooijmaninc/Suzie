@@ -8,6 +8,7 @@ use KooijmanInc\Suzie\Model\Entity\EntityFactory;
 use KooijmanInc\Suzie\Model\Entity\EntityInterface;
 use KooijmanInc\Suzie\SuzieInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class AbstractDataMapper
@@ -44,7 +45,7 @@ abstract class AbstractDataMapper implements DataMapperInterface
      * @param EntityFactory $entityFactory
      * @param TranslatorInterface $translator
      */
-    public function __construct(FormBuilderFactory $formBuilderFactory, EntityFactory $entityFactory, protected TranslatorInterface $translator)
+    public function __construct(FormBuilderFactory $formBuilderFactory, EntityFactory $entityFactory, protected TranslatorInterface $translator, protected RequestStack $requestStack)
     {
         $this->formBuilderFactory = $formBuilderFactory;
         $this->entityFactory = $entityFactory;
@@ -67,7 +68,7 @@ abstract class AbstractDataMapper implements DataMapperInterface
             $toBeSetInputs[$inputs['Field']] = $inputs;
         }
 
-        $form = $this->formBuilderFactory->create($this->suzie, $this->formBuilderClassName, $this->translator, $toBeSetInputs ?? [], $base, $raw);
+        $form = $this->formBuilderFactory->create($this->suzie, $this->formBuilderClassName, $this->translator, $this->requestStack, $toBeSetInputs ?? [], $base, $raw);
 
         return $form;
     }
