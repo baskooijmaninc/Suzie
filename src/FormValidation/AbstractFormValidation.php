@@ -6,7 +6,6 @@ use KooijmanInc\Suzie\Exception\NotSupported;
 use KooijmanInc\Suzie\FormBuilder\FormParts\Form\FormInterface;
 use KooijmanInc\Suzie\FormBuilder\FormParts\Input\InputInterface;
 use KooijmanInc\Suzie\Helper\Common;
-use KooijmanInc\Suzie\Object\FormObject\ObjectInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -30,10 +29,23 @@ abstract class AbstractFormValidation implements FormValidationInterface
 
     protected Request $request;
 
+    protected ?string $pregMatch = null;
+
+    protected int $minWidth = 0;
+
+    protected ?int $maxWidth = null;
+
+    protected ?string $hashValue = null;
+
+    protected bool $hasError = false;
+
+    private array $hasValueAllowed = ['md5', 'sha1', 'encrypt'];
+
     public function __construct(RequestStack $requestStack, string $id)
     {
         $this->id = $id;
         $this->request = $requestStack->getCurrentRequest();
+        //dump($this->request);
     }
 
     /**
@@ -46,7 +58,7 @@ abstract class AbstractFormValidation implements FormValidationInterface
         return $this;
     }
 
-    public function setIsValidated(FormInterface $form, InputInterface $formElement)
+    public function setIsValidated(FormInterface $form, InputInterface $formElements)
     {
         if (strtolower($this->request->getMethod()) === $form->method) {
             if ($form->method === 'post') {
@@ -54,12 +66,44 @@ abstract class AbstractFormValidation implements FormValidationInterface
             } elseif ($form->method === 'get') {
                 $request = $this->decryptRequest($this->request->query->all());
             }
-            if (array_key_exists($formElement->getName(), $request)) {
-                dump($form, $formElement);
-                $formElement->value = $request[$formElement->getName()];
+            if (array_key_exists($formElements->getName(), $request) && $formElements->formElement !== 'button') {
+                if (false === $validate = $this->validate($request[$formElements->getName()])) {
+                    $this->hasError = true;
+                } else {
+                    $formElements->value($validate[1]);
+                }
             }
         }
-        return $formElement;
+
+        return $this;
+    }
+
+    public function setPregMatch($value)
+    {
+        $this->pregMatch = $value ?? null;
+
+        return $this;
+    }
+
+    public function setValidation(array $dbColData = []): static
+    {
+        if ($dbColData !== null && $dbColData !== []) {
+            if ($dbColData['Field'] === 'email' && $this->pregMatch === null) {
+                $this->pregMatch = "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/i";
+                $this->minWidth = 8;
+            }
+            if ($dbColData['Field'] === 'password' && $this->pregMatch === null) {
+                $this->pregMatch = "/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,20}$/";
+                $this->hashValue = 'sha1';
+                $this->minWidth = 8;
+            }
+            $number = (int)filter_var($dbColData['Type'], FILTER_SANITIZE_NUMBER_INT);
+            if ($number > 0) {
+                $this->maxWidth = $number;
+            }
+        }
+
+        return $this;
     }
 
     public function &__get(string $name)
@@ -79,7 +123,22 @@ abstract class AbstractFormValidation implements FormValidationInterface
 
     public function __set(string $name, $value)
     {
-        // TODO: Implement __set() method.
+        $accessor = 'set' . ucfirst($name);
+
+        if (method_exists($this, $accessor) && is_callable([$this, $accessor])) {
+            return $this->$accessor($value[0] ?? null);
+        }
+
+        throw new NotSupported("__set: property or method ".get_called_class()."::{$name} is not supported");
+    }
+
+    public function __call(string $name, $arguments)
+    {
+        if (!empty($arguments)) {
+            return $this->__set($name, $arguments);
+        }
+
+        throw new NotSupported("__call (".get_called_class()."::$name) with args: (".implode($arguments).") is not supported.");
     }
 
     protected function decryptRequest(array $request): array
@@ -89,5 +148,14 @@ abstract class AbstractFormValidation implements FormValidationInterface
         }
 
         return $return;
+    }
+
+    protected function validate(string $value)
+    {
+        if (strlen($value) < $this->minWidth) {
+            return false;
+        }
+
+        return [true, $value];
     }
 }

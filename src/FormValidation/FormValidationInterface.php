@@ -18,4 +18,8 @@ interface FormValidationInterface extends FormCollectorInterface
     public function setPrevious(): static;
 
     public function setIsValidated(FormInterface $form, InputInterface $formElements);
+
+    public function setPregMatch($value);
+
+    public function setValidation(array $dbColData = []): static;
 }
