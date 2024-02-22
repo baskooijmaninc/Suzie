@@ -37,7 +37,13 @@ abstract class AbstractFormValidation implements FormValidationInterface
 
     protected ?string $hashValue = null;
 
+    protected bool $allowNull = true;
+
     protected bool $hasError = false;
+
+    protected bool $hasWarning = false;
+
+    protected bool $hasSuccess = false;
 
     private array $hasValueAllowed = ['md5', 'sha1', 'encrypt'];
 
@@ -70,7 +76,14 @@ abstract class AbstractFormValidation implements FormValidationInterface
                 if (false === $validate = $this->validate($request[$formElements->getName()])) {
                     $this->hasError = true;
                 } else {
-                    $formElements->value($validate[1]);
+                    if ($validate[0] === 'error') {
+                        $this->hasError = true;
+                    } elseif ($validate[0] === 'warning') {
+                        $this->hasWarning = true;
+                    } else {
+                        $this->hasSuccess = true;
+                        $formElements->value($validate[1]);
+                    }
                 }
             }
         }
@@ -100,6 +113,9 @@ abstract class AbstractFormValidation implements FormValidationInterface
             $number = (int)filter_var($dbColData['Type'], FILTER_SANITIZE_NUMBER_INT);
             if ($number > 0) {
                 $this->maxWidth = $number;
+            }
+            if ($dbColData['Null'] === "NO") {
+                $this->allowNull = false;
             }
         }
 
@@ -153,7 +169,13 @@ abstract class AbstractFormValidation implements FormValidationInterface
     protected function validate(string $value)
     {
         if (strlen($value) < $this->minWidth) {
-            return false;
+            return ['warning'];
+        }
+        if (strlen($value) > $this->maxWidth) {
+            return ['warning'];
+        }
+        if (empty($value) && $this->allowNull === false) {
+            return ['error'];
         }
 
         return [true, $value];
