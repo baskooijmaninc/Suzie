@@ -2,6 +2,7 @@
 
 namespace KooijmanInc\Suzie\FormValidation;
 
+use KooijmanInc\Suzie\Exception\NotSupported;
 use KooijmanInc\Suzie\FormBuilder\FormCollector\FormCollectorInterface;
 use KooijmanInc\Suzie\FormBuilder\FormParts\Form\FormInterface;
 use KooijmanInc\Suzie\FormBuilder\FormParts\Input\InputInterface;
@@ -31,6 +32,8 @@ interface FormValidationInterface extends FormCollectorInterface
     /**
      * @param string $name
      * @param $value
+     * @return mixed
+     * @throws NotSupported
      */
     public function __set(string $name, $value);
 }

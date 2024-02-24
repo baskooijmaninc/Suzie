@@ -143,6 +143,8 @@ abstract class AbstractFormValidation implements FormValidationInterface
     /**
      * @param string $name
      * @param $value
+     * @return mixed
+     * @throws NotSupported
      */
     public function __set(string $name, $value)
     {
