@@ -8,6 +8,7 @@ use KooijmanInc\Suzie\SuzieInterface;
  * Class AbstractEntity
  * @property $id
  */
+#[\AllowDynamicProperties]
 abstract class AbstractEntity implements EntityInterface
 {
     protected string $uuid;
