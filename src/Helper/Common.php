@@ -26,9 +26,14 @@ class Common
     {
 
         $encryptKey = base64_decode('bRuD5WYw5wd0rdHR9yLlM6wt2vteuiniQBqE70nAuhU=');
-        list($encryptedData, $iv) = explode('::', base64_decode($value), 2);
+        if (count(explode('::', base64_decode($value), 2)) > 1) {
+            list($encryptedData, $iv) = explode('::', base64_decode($value), 2);
 
-        return openssl_decrypt($encryptedData, 'aes-256-cbc', $encryptKey, 0, $iv);
+
+            return openssl_decrypt($encryptedData, 'aes-256-cbc', $encryptKey, 0, $iv);
+        } else {
+            return false;
+        }
     }
 
     /**

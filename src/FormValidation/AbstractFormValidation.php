@@ -173,7 +173,7 @@ abstract class AbstractFormValidation implements FormValidationInterface
             $return[Common::decrypt($key)] = $value;
         }
 
-        return $return;
+        return $return ?? [];
     }
 
     protected function validate(string $value)
