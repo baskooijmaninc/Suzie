@@ -137,6 +137,11 @@ abstract class AbstractFormValidation implements FormValidationInterface
         throw new NotSupported("__get: property or method ".get_called_class()."::{$name} is not supported");
     }
 
+    /**
+     * @param string $name
+     * @param $value
+     * @throws NotSupported
+     */
     public function __set(string $name, $value)
     {
         $accessor = 'set' . ucfirst($name);
