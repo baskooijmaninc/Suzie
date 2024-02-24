@@ -22,4 +22,15 @@ interface FormValidationInterface extends FormCollectorInterface
     public function setPregMatch($value);
 
     public function setValidation(array $dbColData = []): static;
+
+    /**
+     * @param string $name
+     */
+    public function &__get(string $name);
+
+    /**
+     * @param string $name
+     * @param $value
+     */
+    public function __set(string $name, $value);
 }
