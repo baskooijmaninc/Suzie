@@ -6,7 +6,6 @@ use KooijmanInc\Suzie\Exception\NotSupported;
 use KooijmanInc\Suzie\FormBuilder\FormCollector\FormCollectorInterface;
 use KooijmanInc\Suzie\FormBuilder\FormParts\Form\FormInterface;
 use KooijmanInc\Suzie\FormBuilder\FormParts\Input\InputInterface;
-use KooijmanInc\Suzie\Object\FormObject\ObjectInterface;
 
 /**
  * Interface FormValidationInterface
