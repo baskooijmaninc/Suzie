@@ -24,16 +24,4 @@ interface FormValidationInterface extends FormCollectorInterface
 
     public function setValidation(array $dbColData = []): static;
 
-    /**
-     * @param string $name
-     */
-    public function &__get(string $name);
-
-    /**
-     * @param string $name
-     * @param $value
-     * @return mixed
-     * @throws NotSupported
-     */
-    public function __set(string $name, $value);
 }

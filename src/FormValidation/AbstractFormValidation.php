@@ -141,12 +141,12 @@ abstract class AbstractFormValidation implements FormValidationInterface
     }
 
     /**
-     * @param string $name
+     * @param $name
      * @param $value
      * @return mixed
      * @throws NotSupported
      */
-    public function __set(string $name, $value)
+    public function __set($name, $value)
     {
         $accessor = 'set' . ucfirst($name);
 
