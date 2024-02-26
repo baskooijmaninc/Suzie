@@ -41,6 +41,8 @@ abstract class AbstractFormValidation implements FormValidationInterface
 
     protected ?string $pregMatch = null;
 
+    protected ?string $pregMatchMessage = null;
+
     protected int $minWidth = 0;
 
     protected string $minWidthMessage = 'mustBeMinimum';
@@ -59,17 +61,23 @@ abstract class AbstractFormValidation implements FormValidationInterface
 
     protected bool $hasSuccess = false;
 
+    protected bool $useSuccess = false;
+
     protected string $errorMessage = '';
 
     protected ?string $filterVar = null;
 
     protected ?string $locale = null;
 
+    protected string $comparisonOperator = "=";
+
+    protected string $logicalOperator = "AND";
+
     private array $hashValueAllowed = ['md5', 'sha1', 'encrypt'];
 
     private array $filterVarAllowed = ['FILTER_VALIDATE_BOOLEAN' => 258, 'FILTER_VALIDATE_BOOL' => 258, 'FILTER_VALIDATE_DOMAIN' => 277, 'FILTER_VALIDATE_EMAIL' => 274, 'FILTER_VALIDATE_FLOAT' => 259, 'FILTER_VALIDATE_INT' => 257, 'FILTER_VALIDATE_IP' => 275, 'FILTER_VALIDATE_MAC' => 276, 'FILTER_VALIDATE_REGEXP' => 272, 'FILTER_VALIDATE_URL' => 273];
 
-    private string $name;
+    private ?string $name = null;
 
     public function __construct(RequestStack $requestStack, string $id, TranslatorInterface $translator)
     {
@@ -106,7 +114,9 @@ abstract class AbstractFormValidation implements FormValidationInterface
                     $this->formElement->value('');
                     $this->isValidated = false;
                 } elseif ($validate[0] === true) {
-                    $this->hasSuccess = true;
+                    if ($this->useSuccess === true) {
+                        $this->hasSuccess = true;
+                    }
                     $this->formElement->value($validate[1]);
                     $this->isValidated = true;
                 }
@@ -135,7 +145,7 @@ abstract class AbstractFormValidation implements FormValidationInterface
         return $this;
     }
 
-    public function setPregMatch($value)
+    public function setPregMatch($value): static
     {
         $this->pregMatch = $value ?? null;
 
@@ -145,12 +155,15 @@ abstract class AbstractFormValidation implements FormValidationInterface
     public function setValidation(array $dbColData = []): static
     {
         if ($dbColData !== null && $dbColData !== []) {
-            if ($dbColData['Field'] === 'email' && $this->pregMatch === null) {
+            if (str_contains(strtolower($dbColData['Field']), 'email') && $this->pregMatch === null) {
                 $this->pregMatch = "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/i";
+                $this->pregMatchMessage = "onlyCharactersAllowed";
+                $this->filterVar = 'FILTER_VALIDATE_EMAIL';
                 $this->minWidth = 8;
             }
-            if ($dbColData['Field'] === 'password' && $this->pregMatch === null) {
+            if (str_contains(strtolower($dbColData['Field']), 'password') && $this->pregMatch === null) {
                 $this->pregMatch = "/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,20}$/";
+                $this->pregMatchMessage = "onlyCharactersAllowed";
                 $this->hashValue = 'sha1';
                 $this->minWidth = 8;
             }
@@ -166,13 +179,25 @@ abstract class AbstractFormValidation implements FormValidationInterface
         return $this;
     }
 
-    public function setFilterVar(string $varName): static
+    public function setFilterVar(?string $varName): static
     {
-        if (array_key_exists($varName, $this->filterVarAllowed)) {
+        if (array_key_exists($varName, $this->filterVarAllowed) || $varName === null) {
             $this->filterVar = $varName;
         }
 
         return $this;
+    }
+
+    public function setMaxWidth(int $width): static
+    {
+        $this->maxWidth = $width;
+
+        return  $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
     }
 
     /**
@@ -251,6 +276,20 @@ abstract class AbstractFormValidation implements FormValidationInterface
                 if (!checkdnsrr(array_pop($check), 'MX')) {
                     return ['error', $this->translator->trans('nonExistingEmail', [], 'suzie', $this->locale)];
                 }
+            }
+        }
+        if ($this->pregMatch !== null) {
+            if (!preg_match($this->pregMatch, $value)) {
+                return ['warning', str_replace('PREGMATCH', $this->pregMatch, $this->translator->trans($this->pregMatchMessage, [], 'suzie', $this->locale))];
+            }
+        }
+        if ($this->hashValue !== null) {
+            if ($this->hashValue === 'encrypt') {
+                $value = Common::encrypt($value);
+            } elseif ($this->hashValue === 'sha1') {
+                $value = SHA1($value);
+            } elseif ($this->hashValue === 'md5') {
+                $value = MD5($value);
             }
         }
 

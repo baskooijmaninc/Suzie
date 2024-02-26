@@ -9,6 +9,12 @@ use Symfony\Component\Stopwatch\Stopwatch;
 interface SuzieInterface
 {
     /**
+     * @param FormBuilderInterface $formBuilder
+     * @return array|bool
+     */
+    public function hasRecord(FormBuilderInterface $formBuilder): array|bool;
+
+    /**
      * @param array $data
      * @return AbstractSuzie
      */

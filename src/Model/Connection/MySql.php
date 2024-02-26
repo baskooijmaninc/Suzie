@@ -63,11 +63,33 @@ class MySql
             if (isset($list)) {
                 return $list;
             } else {
-                $this->logger->notice("[" . date("Y-m-d H:i:s") . "] get Row has found nothing $sql");
+                $this->logger->notice("[" . date("Y-m-d H:i:s") . "] get all has found nothing $sql");
                 return [];
             }
         } else {
-            $this->logger->warning("[" . date("Y-m-d H:i:s") . "] get query has failed $sql");
+            $this->logger->warning("[" . date("Y-m-d H:i:s") . "] get all query has failed $sql");
+            return [];
+        }
+    }
+
+    protected function getOne(string $sql, string $col = null, array $bind = []): array
+    {
+        if (false !== $res = $this->query($sql)) {
+            if ($col !== null && $col !== "") {
+                $res->bind_param($col, ...$bind);
+            }
+
+            $res->execute();
+            $result = $res->get_result();
+
+            if ($found = $result->fetch_assoc()) {
+                return $found;
+            } else {
+                $this->logger->notice("[" . date("Y-m-d H:i:s") . "] get one has found nothing $sql");
+                return [];
+            }
+        } else {
+            $this->logger->warning("[" . date("Y-m-d H:i:s") . "] get one query has failed $sql");
             return [];
         }
     }

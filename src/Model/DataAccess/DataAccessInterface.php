@@ -11,6 +11,8 @@ interface DataAccessInterface
      */
     public function getTableColumns(): iterable;
 
+    public function get(string $where = null, array $bind = [], $onlyFirstRow = false): iterable;
+
     /**
      * @param LoggerInterface|null $logger
      * @return DataAccessInterface

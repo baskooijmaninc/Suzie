@@ -55,6 +55,16 @@ abstract class AbstractConnectionFactory extends MySql implements ConnectionFact
     }
 
     /**
+     * @param string $query
+     * @param array $binds
+     * @return array
+     */
+    public function fetchOne(string $query, array $binds = []): array
+    {
+        return $this->getOne($query, $this->setCol($binds), $binds);
+    }
+
+    /**
      * @param array $bind
      * @return string
      */

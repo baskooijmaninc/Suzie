@@ -76,6 +76,37 @@ abstract class AbstractSuzie implements SuzieInterface
     }
 
     /**
+     * @param FormBuilderInterface $formBuilder
+     * @return array|bool
+     */
+    public function hasRecord(FormBuilderInterface $formBuilder): array|bool
+    {
+        //dump($formBuilder);
+        $rules = $formBuilder->getRules();
+        //dump($rules);
+        $requestId = uniqid();
+
+        if ($this->debug === true) {
+            $this->logger->debug('Called ' . $this->name . '::create {requestId}', compact('requestId', 'formBuilder'));
+        }
+
+        if ($this->debug === true) {
+            $e = $this->stopwatch->start($this->name . '::create#' . $requestId, 'suzie');
+        }
+
+        if ($rules !== false) {
+            $result = $this->dataAccess->get($rules[0] ?? null, $rules[1] ?? null, true);
+            $return = [(bool)$result, $result];
+        }
+
+        if (isset($e) && $e->isStarted()) {
+            $e->stop();
+        }
+
+        return $return ?? false;
+    }
+
+    /**
      * @param array $data
      * @return AbstractSuzie
      */

@@ -64,6 +64,24 @@ abstract class AbstractDataAccess implements DataAccessInterface
         return $this->tableColumns;
     }
 
+    public function get(string $where = null, array $bind = [], $onlyFirstRow = false): iterable
+    {
+        $where = (!empty($where)) ? ' WHERE ' . $where : null;
+        $query = "SELECT * FROM `{$this->table}`{$where}";
+
+        if ($onlyFirstRow) {
+            $data = $this->connectionFactory->fetchOne($query, $bind);
+        } else {
+            $data = $this->connectionFactory->fetchAll($query, $bind);
+        }
+
+        if ($this->debug === true) {
+            $this->logger->debug('Called ' . $this->name . '::get "{where}".', compact('where', 'bind', 'onlyFirstRow', 'query', 'data'));
+        }
+
+        return $data;
+    }
+
     public function setLogger(LoggerInterface $logger = null): DataAccessInterface
     {
         $this->logger = $logger;
