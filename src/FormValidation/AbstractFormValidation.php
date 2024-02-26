@@ -63,6 +63,8 @@ abstract class AbstractFormValidation implements FormValidationInterface
 
     protected ?string $filterVar = null;
 
+    protected ?string $locale = null;
+
     private array $hashValueAllowed = ['md5', 'sha1', 'encrypt'];
 
     private array $filterVarAllowed = ['FILTER_VALIDATE_BOOLEAN' => 258, 'FILTER_VALIDATE_BOOL' => 258, 'FILTER_VALIDATE_DOMAIN' => 277, 'FILTER_VALIDATE_EMAIL' => 274, 'FILTER_VALIDATE_FLOAT' => 259, 'FILTER_VALIDATE_INT' => 257, 'FILTER_VALIDATE_IP' => 275, 'FILTER_VALIDATE_MAC' => 276, 'FILTER_VALIDATE_REGEXP' => 272, 'FILTER_VALIDATE_URL' => 273];
@@ -74,6 +76,7 @@ abstract class AbstractFormValidation implements FormValidationInterface
         $this->id = $id;
         $this->request = $requestStack->getCurrentRequest();
         $this->translator = $translator;
+        $this->locale = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
     }
 
     /**
@@ -230,10 +233,10 @@ abstract class AbstractFormValidation implements FormValidationInterface
     protected function validate(string $value)
     {
         if (strlen($value) < $this->minWidth) {
-            return ['warning', str_replace('NUMBER', $this->minWidth, $this->translator->trans($this->minWidthMessage, [], 'suzie'))];
+            return ['warning', str_replace('NUMBER', $this->minWidth, $this->translator->trans($this->minWidthMessage, [], 'suzie', $this->locale))];
         }
         if (strlen($value) > $this->maxWidth) {
-            return ['warning', str_replace('NUMBER', $this->maxWidth, $this->translator->trans($this->maxWidthMessage, [], 'suzie'))];
+            return ['warning', str_replace('NUMBER', $this->maxWidth, $this->translator->trans($this->maxWidthMessage, [], 'suzie', $this->locale))];
         }
         if (empty($value) && $this->allowNull === false) {
             return ['error'];
@@ -241,12 +244,12 @@ abstract class AbstractFormValidation implements FormValidationInterface
         if ($this->filterVar !== null) {
             if ($this->filterVar === 'FILTER_VALIDATE_EMAIL') {
                 if (!filter_var($value, $this->filterVarAllowed[$this->filterVar])) {
-                    return ['warning', $this->translator->trans('noValidEmail', [], 'suzie')];
+                    return ['warning', $this->translator->trans('noValidEmail', [], 'suzie', $this->locale)];
                 }
 
                 $check = explode('@', $value);
                 if (!checkdnsrr(array_pop($check), 'MX')) {
-                    return ['error', $this->translator->trans('nonExistingEmail', [], 'suzie')];
+                    return ['error', $this->translator->trans('nonExistingEmail', [], 'suzie', $this->locale)];
                 }
             }
         }
