@@ -8,6 +8,7 @@ use KooijmanInc\Suzie\FormBuilder\FormParts\Input\InputInterface;
 use KooijmanInc\Suzie\Helper\Common;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class AbstractFormValidation
@@ -29,11 +30,24 @@ abstract class AbstractFormValidation implements FormValidationInterface
 
     protected Request $request;
 
+    /**
+     * @var array
+     */
+    protected array $decryptedRequest;
+
+    protected $formElement;
+
+    protected TranslatorInterface $translator;
+
     protected ?string $pregMatch = null;
 
     protected int $minWidth = 0;
 
+    protected string $minWidthMessage = 'mustBeMinimum';
+
     protected ?int $maxWidth = null;
+
+    protected string $maxWidthMessage = 'mustBeMaximum';
 
     protected ?string $hashValue = null;
 
@@ -45,13 +59,21 @@ abstract class AbstractFormValidation implements FormValidationInterface
 
     protected bool $hasSuccess = false;
 
-    private array $hasValueAllowed = ['md5', 'sha1', 'encrypt'];
+    protected string $errorMessage = '';
 
-    public function __construct(RequestStack $requestStack, string $id)
+    protected ?string $filterVar = null;
+
+    private array $hashValueAllowed = ['md5', 'sha1', 'encrypt'];
+
+    private array $filterVarAllowed = ['FILTER_VALIDATE_BOOLEAN' => 258, 'FILTER_VALIDATE_BOOL' => 258, 'FILTER_VALIDATE_DOMAIN' => 277, 'FILTER_VALIDATE_EMAIL' => 274, 'FILTER_VALIDATE_FLOAT' => 259, 'FILTER_VALIDATE_INT' => 257, 'FILTER_VALIDATE_IP' => 275, 'FILTER_VALIDATE_MAC' => 276, 'FILTER_VALIDATE_REGEXP' => 272, 'FILTER_VALIDATE_URL' => 273];
+
+    private string $name;
+
+    public function __construct(RequestStack $requestStack, string $id, TranslatorInterface $translator)
     {
         $this->id = $id;
         $this->request = $requestStack->getCurrentRequest();
-        //dump($this->request);
+        $this->translator = $translator;
     }
 
     /**
@@ -64,6 +86,33 @@ abstract class AbstractFormValidation implements FormValidationInterface
         return $this;
     }
 
+    public function getIsValidated(): bool
+    {
+        if (isset($this->decryptedRequest, $this->name)) {
+            if (!$validate = $this->validate($this->decryptedRequest[$this->name])) {
+                $this->hasError = true;
+            } else {
+                if ($validate[0] === 'error') {
+                    $this->hasError = true;
+                    $this->errorMessage = $validate[1];
+                    $this->formElement->value('');
+                    $this->isValidated = false;
+                } elseif ($validate[0] === 'warning') {
+                    $this->hasWarning = true;
+                    $this->errorMessage = $validate[1];
+                    $this->formElement->value('');
+                    $this->isValidated = false;
+                } elseif ($validate[0] === true) {
+                    $this->hasSuccess = true;
+                    $this->formElement->value($validate[1]);
+                    $this->isValidated = true;
+                }
+            }
+        }
+
+        return $this->isValidated;
+    }
+
     public function setIsValidated(FormInterface $form, InputInterface $formElements)
     {
         if (strtolower($this->request->getMethod()) === $form->method) {
@@ -72,19 +121,11 @@ abstract class AbstractFormValidation implements FormValidationInterface
             } elseif ($form->method === 'get') {
                 $request = $this->decryptRequest($this->request->query->all());
             }
-            if (array_key_exists($formElements->getName(), $request) && $formElements->formElement !== 'button') {
-                if (false === $validate = $this->validate($request[$formElements->getName()])) {
-                    $this->hasError = true;
-                } else {
-                    if ($validate[0] === 'error') {
-                        $this->hasError = true;
-                    } elseif ($validate[0] === 'warning') {
-                        $this->hasWarning = true;
-                    } else {
-                        $this->hasSuccess = true;
-                        $formElements->value($validate[1]);
-                    }
-                }
+            $this->decryptedRequest = $request ?? [];
+            if (array_key_exists($formElements->getName(), $this->decryptedRequest) && $formElements->formElement !== 'button') {
+                $this->name = $formElements->getName();
+                $this->formElement = $formElements;
+                $this->getIsValidated();
             }
         }
 
@@ -122,8 +163,18 @@ abstract class AbstractFormValidation implements FormValidationInterface
         return $this;
     }
 
+    public function setFilterVar(string $varName): static
+    {
+        if (array_key_exists($varName, $this->filterVarAllowed)) {
+            $this->filterVar = $varName;
+        }
+
+        return $this;
+    }
+
     /**
      * @param string $name
+     * @return mixed
      * @throws NotSupported
      */
     public function &__get(string $name)
@@ -179,13 +230,25 @@ abstract class AbstractFormValidation implements FormValidationInterface
     protected function validate(string $value)
     {
         if (strlen($value) < $this->minWidth) {
-            return ['warning'];
+            return ['warning', str_replace('NUMBER', $this->minWidth, $this->translator->trans($this->minWidthMessage, [], 'suzie'))];
         }
         if (strlen($value) > $this->maxWidth) {
-            return ['warning'];
+            return ['warning', str_replace('NUMBER', $this->maxWidth, $this->translator->trans($this->maxWidthMessage, [], 'suzie'))];
         }
         if (empty($value) && $this->allowNull === false) {
             return ['error'];
+        }
+        if ($this->filterVar !== null) {
+            if ($this->filterVar === 'FILTER_VALIDATE_EMAIL') {
+                if (!filter_var($value, $this->filterVarAllowed[$this->filterVar])) {
+                    return ['warning', $this->translator->trans('noValidEmail', [], 'suzie')];
+                }
+
+                $check = explode('@', $value);
+                if (!checkdnsrr(array_pop($check), 'MX')) {
+                    return ['error', $this->translator->trans('nonExistingEmail', [], 'suzie')];
+                }
+            }
         }
 
         return [true, $value];
