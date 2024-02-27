@@ -27,7 +27,11 @@ interface FormValidationInterface extends FormCollectorInterface
 
     public function setMaxWidth(int $width): static;
 
+    public function setErrorMessage(string $message): static;
+
     public function getName(): ?string;
+
+    public function getHashValue();
 
     /**
      * @throws NotSupported

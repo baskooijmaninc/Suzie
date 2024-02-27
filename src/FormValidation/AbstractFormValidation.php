@@ -63,7 +63,7 @@ abstract class AbstractFormValidation implements FormValidationInterface
 
     protected bool $useSuccess = false;
 
-    protected string $errorMessage = '';
+    protected ?string $errorMessage = null;
 
     protected ?string $filterVar = null;
 
@@ -195,9 +195,23 @@ abstract class AbstractFormValidation implements FormValidationInterface
         return  $this;
     }
 
+    public function setErrorMessage(?string $message): static
+    {
+        if (is_string($message) || $message === null) {
+            $this->errorMessage = $message;
+        }
+
+        return $this;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
+    }
+
+    public function getHashValue()
+    {
+        return $this->hashValue;
     }
 
     /**
@@ -281,15 +295,6 @@ abstract class AbstractFormValidation implements FormValidationInterface
         if ($this->pregMatch !== null) {
             if (!preg_match($this->pregMatch, $value)) {
                 return ['warning', str_replace('PREGMATCH', $this->pregMatch, $this->translator->trans($this->pregMatchMessage, [], 'suzie', $this->locale))];
-            }
-        }
-        if ($this->hashValue !== null) {
-            if ($this->hashValue === 'encrypt') {
-                $value = Common::encrypt($value);
-            } elseif ($this->hashValue === 'sha1') {
-                $value = SHA1($value);
-            } elseif ($this->hashValue === 'md5') {
-                $value = MD5($value);
             }
         }
 
