@@ -185,9 +185,11 @@ abstract class AbstractSuzie implements SuzieInterface
                         $column['Default'] = time();
                     }
                     if ($column['Key'] === 'PRI' && $column['Field'] !== 'id') {
-
                         $tableColumns['id'] = $column['Default'];
                         $tableColumns['customId'] = $column['Field'];
+                    } elseif ($column['Key'] === 'PRI' && $column['Field'] === 'id' && $column['Extra'] === 'auto_increment') {
+                        $tableColumns[$column['Field']] = $column['Extra'];
+                        $tableColumns['protectedId'] = $column['Field'];
                     } else {
                         $tableColumns[$column['Field']] = $column['Default'];
                     }
