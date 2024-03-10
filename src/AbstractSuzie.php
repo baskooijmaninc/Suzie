@@ -52,7 +52,7 @@ abstract class AbstractSuzie implements SuzieInterface
      */
     public $formBuilder;
 
-    protected $entity;
+    public $entity;
 
     /**
      * @param DataAccessInterface $dataAccess
