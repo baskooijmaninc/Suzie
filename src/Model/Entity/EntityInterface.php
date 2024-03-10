@@ -15,7 +15,7 @@ interface EntityInterface extends \JsonSerializable, \ArrayAccess
 
     public function setRaw(string $property, $value): EntityInterface;
 
-    public function &__get(string $property);
+    public function &__get(string $name);
 
     /**
      * @param bool $validate
@@ -31,4 +31,6 @@ interface EntityInterface extends \JsonSerializable, \ArrayAccess
     public function toArray(bool $hideNotInvoked = false): array;
 
     public function toArrayForSave(): array;
+
+    public function toBeSetInputs(array $inputs): void;
 }

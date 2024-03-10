@@ -11,6 +11,7 @@ class EntityFactory
         $entity = new $entityClassName($suzie);
 
         if (!empty($data)) {
+            $entity->toBeSetInputs($data);
             if ($raw === true) {
                 $entity = $this->fillRaw($entity, $data);
             } else {

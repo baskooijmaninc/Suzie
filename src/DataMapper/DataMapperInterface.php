@@ -64,4 +64,6 @@ interface DataMapperInterface
     public function checkEntityType($entity): bool;
 
     public function insert(EntityInterface &$entity): bool;
+
+    public function isCached(int $id): bool;
 }

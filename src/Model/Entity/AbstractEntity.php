@@ -2,6 +2,7 @@
 
 namespace KooijmanInc\Suzie\Model\Entity;
 
+use KooijmanInc\Suzie\Exception\NotSupported;
 use KooijmanInc\Suzie\SuzieInterface;
 
 /**
@@ -21,6 +22,11 @@ abstract class AbstractEntity implements EntityInterface
     protected mixed $id;
 
     protected SuzieInterface $suzie;
+
+    /**
+     * @var array
+     */
+    protected array $toBeSetInputs = [];
 
     public function __construct(SuzieInterface $suzie)
     {
@@ -57,18 +63,34 @@ abstract class AbstractEntity implements EntityInterface
         return $this;
     }
 
-    public function &__get(string $property)
+    public function &__get(string $name)
     {
-        if (property_exists($this, $property)) {
-            return $this->{$property};
+        $accessor = "get" . ucfirst($name);
+
+        if (method_exists($this, $accessor) && is_callable([$this, $accessor])) {
+            $value = $this->$accessor();
+
+            return $value;
+        } elseif (property_exists($this, $name)) {
+            return $this->$name;
         }
+
+        throw new NotSupported("__get: property or method ".get_called_class()."::{$name} is not supported");
     }
 
-    public function __set(string $property, $value)
+    public function __set(string $name, $value)
     {
-        if (property_exists($this, $property)) {
-            return $this->{$property} = $value;
+        $accessor = "set" . ucfirst($name);
+
+        if (method_exists($this, $accessor) && is_callable([$this, $accessor])) {
+            return $this->$accessor($value);
+        } elseif (property_exists($this, $name)) {
+            return $this->$name = $value;
+        } elseif (!property_exists($this, $name) && (array_key_exists($name, $this->toBeSetInputs))) {
+            return $this->$name = $value;
         }
+
+        throw new NotSupported("__set: property or method ".get_called_class()."::{$name} is not supported");
     }
 
     /**
@@ -129,6 +151,23 @@ abstract class AbstractEntity implements EntityInterface
     public function toArrayForSave(): array
     {
         return $this->toArray();
+    }
+
+    /**
+     * @param array $inputs
+     * @return void
+     */
+    public function toBeSetInputs(array $inputs): void
+    {
+        foreach ($inputs as $key => $value) {
+            if ($key === 'id') {
+                $key = 'protectedId';
+                $value = 'id';
+            }
+            if (!isset($this->toBeSetInputs[$key])) {
+                $this->toBeSetInputs[$key] = $value;
+            }
+        }
     }
 
     public function jsonSerialize(): mixed

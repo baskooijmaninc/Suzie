@@ -109,24 +109,33 @@ abstract class AbstractDataMapper implements DataMapperInterface
     public function insert(EntityInterface &$entity): bool
     {
         $this->checkSetup();
-dump('here??');
+
         foreach ($entity->toArrayForSave() as $field => $value) {
             if ($value !== null) {
                 $fields[$field] = $value;
             }
         }
         if ($id = $this->dataAccess->insert($fields)) {
-            //dump($fields);
             $entity->id = $id;
 
             if ($this->isCached($id) == false) {
                 self::$cache[$this->entityClassName][$id] = $entity;
             }
-            dump($entity);
             return true;
         } else {
-            dump('failed??');
             return false;
+        }
+
+        return false;
+    }
+
+    public function isCached(int $id): bool
+    {
+        if (!isset(self::$cache[$this->entityClassName])) {
+            dump('no cache');
+            //self::$cache[$this->entityClassName] = [];
+        } elseif (isset(self::$cache[$this->entityClassName][$id])) {
+            dump('have cache');
         }
 
         return false;
