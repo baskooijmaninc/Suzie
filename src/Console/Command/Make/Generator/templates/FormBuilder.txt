@@ -2,6 +2,7 @@ namespace %1$s;
 
 use KooijmanInc\Suzie\FormBuilder\AbstractFormBuilder;
 use %2$s\Suzie\%3$s\%4$s as Suzie;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -12,9 +13,11 @@ class %4$s extends AbstractFormBuilder
 {
     /**
      * @param Suzie $suzie
+     * @param TranslatorInterface $translator
+     * @param RequestStack $requestStack
      */
-    public function __construct(Suzie $suzie, TranslatorInterface $translator)
+    public function __construct(Suzie $suzie, TranslatorInterface $translator, RequestStack $requestStack)
     {
-        parent::__construct($suzie, $translator);
+        parent::__construct($suzie, $translator, $requestStack);
     }
 }

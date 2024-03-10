@@ -32,10 +32,14 @@ abstract class AbstractEntity implements EntityInterface
 
     public function setRaw(string $property, $value): EntityInterface
     {
-
         $this->{$property} = $value;
 
         return $this;
+    }
+
+    public function save()
+    {
+
     }
 
     public function jsonSerialize(): mixed

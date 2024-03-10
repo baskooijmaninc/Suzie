@@ -14,6 +14,8 @@ interface SuzieInterface
      */
     public function hasRecord(FormBuilderInterface $formBuilder): array|bool;
 
+    public function save(EntityInterface &$entity);
+
     /**
      * @param array $data
      * @return AbstractSuzie

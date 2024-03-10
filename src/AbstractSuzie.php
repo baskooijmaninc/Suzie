@@ -106,6 +106,21 @@ abstract class AbstractSuzie implements SuzieInterface
         return $return ?? false;
     }
 
+    public function save(EntityInterface &$entity)
+    {
+        $requestId = uniqid();
+
+        if ($this->debug === true) {
+            $this->logger->debug('Called ' . $this->name . '::save {requestId}', compact('requestId', 'entity'));
+        }
+
+        if ($this->debug === true) {
+            $e = $this->stopwatch->start($this->name . '::save#' . $requestId, 'suzie');
+        }
+
+
+    }
+
     /**
      * @param array $data
      * @return AbstractSuzie
