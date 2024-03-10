@@ -10,10 +10,13 @@ class EntityFactory
     {
         $entity = new $entityClassName($suzie);
 
-        if ($raw === true) {
-            $entity = $this->fillRaw($entity, $data);
-        } else {
-            $entity = $this->fillNormal($entity, $data);
+        if (!empty($data)) {
+            if ($raw === true) {
+                $entity = $this->fillRaw($entity, $data);
+            } else {
+                $entity = $this->fillNormal($entity, $data);
+            }
+            $entity->setPrevious();
         }
 
         return $entity;

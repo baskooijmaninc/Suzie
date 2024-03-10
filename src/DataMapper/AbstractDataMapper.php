@@ -4,6 +4,7 @@ namespace KooijmanInc\Suzie\DataMapper;
 
 use KooijmanInc\Suzie\FormBuilder\FormBuilderFactory;
 use KooijmanInc\Suzie\FormBuilder\FormBuilderInterface;
+use KooijmanInc\Suzie\Model\DataAccess\DataAccessInterface;
 use KooijmanInc\Suzie\Model\Entity\EntityFactory;
 use KooijmanInc\Suzie\Model\Entity\EntityInterface;
 use KooijmanInc\Suzie\SuzieInterface;
@@ -20,6 +21,11 @@ abstract class AbstractDataMapper implements DataMapperInterface
      * @var array
      */
     protected static array $cache = [];
+
+    /**
+     * @var DataAccessInterface
+     */
+    protected DataAccessInterface $dataAccess;
 
     /**
      * @var EntityFactory
@@ -62,6 +68,13 @@ abstract class AbstractDataMapper implements DataMapperInterface
         return $this;
     }
 
+    public function setDataAccess(DataAccessInterface $dataAccess): DataMapperInterface
+    {
+        $this->dataAccess = $dataAccess;
+
+        return $this;
+    }
+
     public function rowToFormBuilder(iterable $row, array $base = [], bool $raw = true, bool $checkSetup = true): FormBuilderInterface
     {
         foreach ($row as $inputs) {
@@ -82,5 +95,47 @@ abstract class AbstractDataMapper implements DataMapperInterface
         }
 
         return $entity;
+    }
+
+    /**
+     * @param $entity
+     * @return bool
+     */
+    public function checkEntityType($entity): bool
+    {
+        return $entity instanceof $this->entityClassName;
+    }
+
+    public function insert(EntityInterface &$entity): bool
+    {
+        $this->checkSetup();
+dump('here??');
+        foreach ($entity->toArrayForSave() as $field => $value) {
+            if ($value !== null) {
+                $fields[$field] = $value;
+            }
+        }
+        if ($id = $this->dataAccess->insert($fields)) {
+            //dump($fields);
+            $entity->id = $id;
+
+            if ($this->isCached($id) == false) {
+                self::$cache[$this->entityClassName][$id] = $entity;
+            }
+            dump($entity);
+            return true;
+        } else {
+            dump('failed??');
+            return false;
+        }
+
+        return false;
+    }
+
+    protected function checkSetup(): void
+    {
+        if ($this->dataAccess === null) {
+            throw new \Exception("Class " . get_class($this) . "need dataAcces to be set");
+        }
     }
 }

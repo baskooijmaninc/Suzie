@@ -6,12 +6,18 @@ use KooijmanInc\Suzie\DataMapper\DataMapperInterface;
 use KooijmanInc\Suzie\FormBuilder\FormBuilderInterface;
 use KooijmanInc\Suzie\Model\DataAccess\DataAccessInterface;
 use KooijmanInc\Suzie\Model\Entity\EntityInterface;
+use KooijmanInc\Suzie\Object\FormObject\ObjectInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractSuzie implements SuzieInterface
 {
+    /**
+     * @var array
+     */
+    protected static array $instance = [];
+
     /**
      * @var DataAccessInterface
      */
@@ -73,6 +79,9 @@ abstract class AbstractSuzie implements SuzieInterface
         $this->dataAccess->setDebug($this->debug);
 
         $this->dataMapper->setSuzie($this);
+        $this->dataMapper->setDataAccess($this->dataAccess);
+
+        self::$instance[$this->name] = $this;
     }
 
     /**
@@ -106,7 +115,7 @@ abstract class AbstractSuzie implements SuzieInterface
         return $return ?? false;
     }
 
-    public function save(EntityInterface &$entity)
+    public function save(EntityInterface &$entity, bool $validate = true): bool
     {
         $requestId = uniqid();
 
@@ -118,7 +127,38 @@ abstract class AbstractSuzie implements SuzieInterface
             $e = $this->stopwatch->start($this->name . '::save#' . $requestId, 'suzie');
         }
 
+        if ($this->checkEntityType($entity instanceof ObjectInterface ? $entity->getObject() : $entity) === true) {
+            if ($entity->hasUnsavedChanges() === false) {
+                $return = true;
+            } else {
+                if ($validate === false) {
+                    if ($entity->id !== null && $entity->id !== 'auto_increment') {
+                        dump('to update?');
+                    } else {
+                        //dump($entity, $validate);
+                        $return = $this->insert($entity);
+                    }
+                }
+            }
+        } else {
+            throw new Exception("Suzie {$this->name}::save {requestId} failed the entity type check");
+        }
 
+
+        if (isset($e) && $e->isStarted()) {
+            $e->stop();
+        }
+
+        return $return ?? false;
+    }
+
+    /**
+     * @param $entity
+     * @return bool
+     */
+    public function checkEntityType($entity): bool
+    {
+        return $this->dataMapper->checkEntityType($entity);
     }
 
     /**
@@ -174,6 +214,27 @@ abstract class AbstractSuzie implements SuzieInterface
         $this->debug = $debug;
 
         return $this;
+    }
+
+    protected function insert(EntityInterface $entity): bool
+    {
+        $requestId = uniqid();
+
+        if ($this->debug === true) {
+            $this->logger->debug('Called ' . $this->name . '::insert {requestId}', compact('requestId', 'entity'));
+        }
+
+        if ($this->debug === true) {
+            $e = $this->stopwatch->start($this->name . '::insert#' . $requestId, 'suzie');
+        }
+
+        $return = $this->dataMapper->insert($entity);
+
+        if (isset($e) && $e->isStarted()) {
+            $e->stop();
+        }
+
+        return $return ?? false;
     }
 
     private function tableColType(string $type, array $columns): array

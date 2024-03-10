@@ -41,4 +41,11 @@ interface ConnectionFactoryInterface
      * @return array
      */
     public function fetchOne(string $query, array $binds = []): array;
+
+    /**
+     * @param string $query
+     * @param array $binds
+     * @return int
+     */
+    public function insert(string $query, array $binds = []): int;
 }

@@ -11,6 +11,11 @@ use KooijmanInc\Suzie\SuzieInterface;
 #[\AllowDynamicProperties]
 abstract class AbstractEntity implements EntityInterface
 {
+    /**
+     * @var EntityInterface|null
+     */
+    protected ?EntityInterface $previous = null;
+
     protected string $uuid;
 
     protected mixed $id;
@@ -23,13 +28,21 @@ abstract class AbstractEntity implements EntityInterface
         $this->suzie = $suzie;
     }
 
-    protected function setId(mixed $id): EntityInterface
+    /**
+     * @return EntityInterface
+     */
+    public function setPrevious(): EntityInterface
     {
-        $this->id = $id;
+        $this->previous = clone $this;
 
         return $this;
     }
 
+    /**
+     * @param string $property
+     * @param $value
+     * @return EntityInterface
+     */
     public function setRaw(string $property, $value): EntityInterface
     {
         $this->{$property} = $value;
@@ -37,9 +50,85 @@ abstract class AbstractEntity implements EntityInterface
         return $this;
     }
 
-    public function save()
+    public function setId(mixed $id): EntityInterface
     {
+        $this->id = $id;
 
+        return $this;
+    }
+
+    public function &__get(string $property)
+    {
+        if (property_exists($this, $property)) {
+            return $this->{$property};
+        }
+    }
+
+    public function __set(string $property, $value)
+    {
+        if (property_exists($this, $property)) {
+            return $this->{$property} = $value;
+        }
+    }
+
+    /**
+     * @param bool $validate
+     * @return bool
+     */
+    public function save(bool $validate = true): bool
+    {
+        return $this->suzie->save($this, $validate);
+    }
+
+    /**
+     * @return bool|array
+     */
+    public function hasUnsavedChanges(): bool|array
+    {
+        $return = [];
+        if (array_diff(get_object_vars(...)->__invoke($this), get_object_vars(...)->__invoke($this->previous))) {
+            $entityColumns = get_object_vars(...)->__invoke($this);
+            if (isset($entityColumns['protectedId'])) {
+                $return['id'] = $this->id;
+            }
+            $return += $entityColumns;
+        } else {
+            $return = false;
+        }
+
+        return $return;
+    }
+
+    public function toArray(bool $hideNotInvoked = false): array
+    {
+        $data = [];
+        $properties = get_object_vars(...)->__invoke($this);
+
+        if (isset($properties['protectedId'])) {
+            if ($this->id !== 'auto_increment') {
+                $data['id'] = $this->id;
+            } else {
+                $data['id'] = null;
+            }
+            unset($properties['protectedId']);
+        }
+
+        $data += $properties;
+
+        if ($hideNotInvoked) {
+            foreach ($data as $key => $value) {
+                if ($value === null) {
+                    unset($data[$key]);
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    public function toArrayForSave(): array
+    {
+        return $this->toArray();
     }
 
     public function jsonSerialize(): mixed
@@ -65,5 +154,10 @@ abstract class AbstractEntity implements EntityInterface
     public function offsetUnset(mixed $offset): void
     {
         // TODO: Implement offsetUnset() method.
+    }
+
+    public function __call(string $name, array $arguments): mixed
+    {
+        dump("__call: ", $name, $arguments);
     }
 }

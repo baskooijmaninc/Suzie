@@ -4,6 +4,7 @@ namespace KooijmanInc\Suzie\DataMapper;
 
 use KooijmanInc\Suzie\FormBuilder\FormBuilderFactory;
 use KooijmanInc\Suzie\FormBuilder\FormBuilderInterface;
+use KooijmanInc\Suzie\Model\DataAccess\DataAccessInterface;
 use KooijmanInc\Suzie\Model\Entity\EntityFactory;
 use KooijmanInc\Suzie\Model\Entity\EntityInterface;
 use KooijmanInc\Suzie\SuzieInterface;
@@ -34,6 +35,12 @@ interface DataMapperInterface
     public function setSuzie(SuzieInterface $suzie): DataMapperInterface;
 
     /**
+     * @param DataAccessInterface $dataAccess
+     * @return DataMapperInterface
+     */
+    public function setDataAccess(DataAccessInterface $dataAccess): DataMapperInterface;
+
+    /**
      * @param array $row
      * @param array $base
      * @param bool $checkSetup
@@ -46,7 +53,15 @@ interface DataMapperInterface
      * @param array $row
      * @param bool $raw
      * @param bool $checkSetup
-     * @return FormBuilderInterface
+     * @return EntityInterface
      */
     public function rowToEntity(array $row, bool $raw = true, bool $checkSetup = true): EntityInterface;
+
+    /**
+     * @param $entity
+     * @return bool
+     */
+    public function checkEntityType($entity): bool;
+
+    public function insert(EntityInterface &$entity): bool;
 }

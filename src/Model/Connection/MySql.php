@@ -94,6 +94,25 @@ class MySql
         }
     }
 
+    protected function insertRow(string $sql, string $col = null, array $bind = []): int
+    {
+        if (false !== $res = $this->query($sql)) {
+            if ($col !== null && $col !== "") {
+                $res->bind_param($col, ...$bind);
+            }
+
+            if ($res->execute()) {
+                return $this->conn->insert_id;
+            } else {
+                $this->logger->notice("[" . date("Y-m-d H:i:s") . "] insert row has found nothing $sql");
+                return 0;
+            }
+        } else {
+            $this->logger->warning("[" . date("Y-m-d H:i:s") . "] insert row query has failed $sql");
+            return 0;
+        }
+    }
+
     /**
      * @param string $sql
      * @return false|mysqli_stmt

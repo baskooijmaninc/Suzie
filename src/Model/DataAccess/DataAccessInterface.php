@@ -14,6 +14,12 @@ interface DataAccessInterface
     public function get(string $where = null, array $bind = [], $onlyFirstRow = false): iterable;
 
     /**
+     * @param array $fields
+     * @return int|bool
+     */
+    public function insert(array $fields = []): int|bool;
+
+    /**
      * @param LoggerInterface|null $logger
      * @return DataAccessInterface
      */

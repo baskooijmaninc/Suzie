@@ -64,6 +64,11 @@ abstract class AbstractConnectionFactory extends MySql implements ConnectionFact
         return $this->getOne($query, $this->setCol($binds), $binds);
     }
 
+    public function insert(string $query, array $binds = []): int
+    {
+        return $this->insertRow($query, $this->setCol($binds), $binds);
+    }
+
     /**
      * @param array $bind
      * @return string

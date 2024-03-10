@@ -82,6 +82,23 @@ abstract class AbstractDataAccess implements DataAccessInterface
         return $data;
     }
 
+    /**
+     * @param array $fields
+     * @return int|bool
+     */
+    public function insert(array $fields = []): int|bool
+    {
+        $query = "INSERT INTO `{$this->table}` (`" . implode('`, `', array_keys($fields)) . "`) VALUES (" . rtrim(str_repeat('?,', count($fields)), ',').")";
+
+        $return = $this->connectionFactory->insert($query, array_values($fields));
+
+        if ($this->debug === true && $this->logger !== null) {
+            $this->logger->debug('Called ' . $this->name . '::insert.', compact('fields', 'query', 'return'));
+        }
+
+        return $return;
+    }
+
     public function setLogger(LoggerInterface $logger = null): DataAccessInterface
     {
         $this->logger = $logger;

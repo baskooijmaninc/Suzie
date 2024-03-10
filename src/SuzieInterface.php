@@ -14,7 +14,9 @@ interface SuzieInterface
      */
     public function hasRecord(FormBuilderInterface $formBuilder): array|bool;
 
-    public function save(EntityInterface &$entity);
+    public function save(EntityInterface &$entity, bool $validate = true): bool;
+
+    public function checkEntityType($entity): bool;
 
     /**
      * @param array $data
