@@ -204,6 +204,15 @@ abstract class AbstractFormValidation implements FormValidationInterface
         return $this;
     }
 
+    public function setHasError(bool $hasError)
+    {
+        if (is_bool($hasError)) {
+            $this->hasError = $hasError;
+        }
+
+        return $this;
+    }
+
     public function getName(): ?string
     {
         return $this->name;

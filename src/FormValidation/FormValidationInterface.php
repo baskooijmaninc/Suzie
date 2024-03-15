@@ -29,9 +29,13 @@ interface FormValidationInterface extends FormCollectorInterface
 
     public function setErrorMessage(string $message): static;
 
+    public function setHasError(bool $hasError);
+
     public function getName(): ?string;
 
     public function getHashValue();
+
+
 
     /**
      * @throws NotSupported
