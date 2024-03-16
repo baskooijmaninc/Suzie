@@ -216,6 +216,17 @@ abstract class AbstractSuzie implements SuzieInterface
         return $this;
     }
 
+    public static function getInstance(): AbstractSuzie
+    {
+        $name = get_called_class();
+
+        if (!isset(self::$instance[$name])) {
+            SuzieFactory::create($name);
+        }
+
+        return self::$instance[$name];
+    }
+
     protected function insert(EntityInterface $entity): bool
     {
         $requestId = uniqid();
