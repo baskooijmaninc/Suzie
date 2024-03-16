@@ -84,6 +84,38 @@ abstract class AbstractSuzie implements SuzieInterface
         self::$instance[$this->name] = $this;
     }
 
+    public function getOne(...$rules): ?EntityInterface
+    {
+        $requestId = uniqid();
+
+        if ($this->debug === true) {
+            $this->logger->debug('Called ' . $this->name . '::create {requestId}', compact('requestId', 'rules'));
+        }
+
+        if (count($rules) === 1 && isset($rules[0]) && is_int($rules[0])) {
+            dump("rules has 1: ", $rules);
+        } elseif ((count($rules) === 1 && isset($rules[0]) && !is_array($rules[0]) && !is_int($rules[0])) ) {
+            dump("between: ", $rules);
+        } else {
+            if (count($rules) !== 0 && !is_array($rules[0])) {
+                dump('here');
+            }
+
+            $row = $this->dataAccess->getBy($rules[0] ?? [], $rules[1] ?? null, $rules[2] ?? [], true);
+            $return = empty($row) ? null : $this->dataMapper->rowToEntity($row);
+        }
+
+        if ($this->debug === true) {
+            $e = $this->stopwatch->start($this->name . '::create#' . $requestId, 'suzie');
+        }
+
+        if (isset($e) && $e->isStarted()) {
+            $e->stop();
+        }
+
+        return $return ?? null;
+    }
+
     /**
      * @param FormBuilderInterface $formBuilder
      * @return array|bool

@@ -8,6 +8,8 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 interface SuzieInterface
 {
+    public function getOne(...$rules): ?EntityInterface;
+
     /**
      * @param FormBuilderInterface $formBuilder
      * @return array|bool

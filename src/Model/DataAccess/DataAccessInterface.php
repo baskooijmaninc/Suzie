@@ -13,6 +13,8 @@ interface DataAccessInterface
 
     public function get(string $where = null, array $bind = [], $onlyFirstRow = false): iterable;
 
+    public function getBy(array $rules, string $where = null, array $bind = [], bool $onlyFirstRow = false): iterable;
+
     /**
      * @param array $fields
      * @return int|bool

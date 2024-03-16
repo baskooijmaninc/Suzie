@@ -2,6 +2,7 @@
 
 namespace KooijmanInc\Suzie\Model\DataAccess;
 
+use KooijmanInc\Suzie\Helper\Rules;
 use KooijmanInc\Suzie\Model\Connection\ConnectionFactoryInterface;
 use Psr\Log\LoggerInterface;
 
@@ -80,6 +81,34 @@ abstract class AbstractDataAccess implements DataAccessInterface
         }
 
         return $data;
+    }
+
+    public function getBy(array $rules, string $where = null, array $bind = [], bool $onlyFirstRow = false): iterable
+    {
+        if (count($rules) > 0) {
+            if (isset($rules['limit'])) {
+                dump($rules['limit']);
+            }
+
+            if (isset($rules['orderby'])) {
+                dump($rules['orderby']);
+            }
+
+            $allRules = Rules::process($rules);
+
+            list($query, $extraBind) = Rules::processToWhereAndBind($allRules);
+
+            if (empty($query)) {
+                $query = $where;
+            } else {
+                $query .= (!empty($where) ? " AND {$where}" : null);
+                $bind = array_merge($bind, $extraBind);
+            }
+        } else {
+            $query = $where;
+        }
+
+        return $this->get($query, $bind, $onlyFirstRow);
     }
 
     /**
