@@ -85,7 +85,7 @@ class MySql
             if ($found = $result->fetch_assoc()) {
                 return $found;
             } else {
-                $this->logger->notice("[" . date("Y-m-d H:i:s") . "] get one has found nothing $sql");
+                $this->logger->notice("[" . date("Y-m-d H:i:s") . "] get one has found nothing $sql " . implode(' ', $bind));
                 return [];
             }
         } else {

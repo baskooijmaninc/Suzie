@@ -103,6 +103,8 @@ abstract class AbstractDataMapper implements DataMapperInterface
      */
     public function checkEntityType($entity): bool
     {
+//        dump($entity, $this->entityClassName);
+//        dump($entity instanceof $this->entityClassName);
         return $entity instanceof $this->entityClassName;
     }
 

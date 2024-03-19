@@ -2,6 +2,7 @@
 
 namespace KooijmanInc\Suzie;
 
+use Exception;
 use KooijmanInc\Suzie\DataMapper\DataMapperInterface;
 use KooijmanInc\Suzie\FormBuilder\FormBuilderInterface;
 use KooijmanInc\Suzie\Model\DataAccess\DataAccessInterface;
@@ -173,6 +174,7 @@ abstract class AbstractSuzie implements SuzieInterface
                 }
             }
         } else {
+            dump($entity);
             throw new Exception("Suzie {$this->name}::save {requestId} failed the entity type check");
         }
 
