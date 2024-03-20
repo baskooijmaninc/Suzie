@@ -55,6 +55,8 @@ abstract class AbstractFormValidation implements FormValidationInterface
 
     protected bool $allowNull = true;
 
+    protected string $allowNullMessage = 'mandatory';
+
     protected bool $hasError = false;
 
     protected bool $hasWarning = false;
@@ -78,6 +80,8 @@ abstract class AbstractFormValidation implements FormValidationInterface
     private array $filterVarAllowed = ['FILTER_VALIDATE_BOOLEAN' => 258, 'FILTER_VALIDATE_BOOL' => 258, 'FILTER_VALIDATE_DOMAIN' => 277, 'FILTER_VALIDATE_EMAIL' => 274, 'FILTER_VALIDATE_FLOAT' => 259, 'FILTER_VALIDATE_INT' => 257, 'FILTER_VALIDATE_IP' => 275, 'FILTER_VALIDATE_MAC' => 276, 'FILTER_VALIDATE_REGEXP' => 272, 'FILTER_VALIDATE_URL' => 273];
 
     private ?string $name = null;
+
+    private ?string $prefix = null;
 
     public function __construct(RequestStack $requestStack, string $id, TranslatorInterface $translator)
     {
@@ -106,17 +110,18 @@ abstract class AbstractFormValidation implements FormValidationInterface
                 if ($validate[0] === 'error') {
                     $this->hasError = true;
                     $this->errorMessage = $validate[1];
-                    $this->formElement->value('');
+                    $this->formElement->value(null);
                     $this->isValidated = false;
                 } elseif ($validate[0] === 'warning') {
                     $this->hasWarning = true;
                     $this->errorMessage = $validate[1];
-                    $this->formElement->value('');
+                    $this->formElement->value(null);
                     $this->isValidated = false;
                 } elseif ($validate[0] === true) {
                     if ($this->useSuccess === true) {
                         $this->hasSuccess = true;
                     }
+                    $this->formElement->validated(true);
                     $this->formElement->value($validate[1]);
                     $this->isValidated = true;
                 }
@@ -126,8 +131,11 @@ abstract class AbstractFormValidation implements FormValidationInterface
         return $this->isValidated;
     }
 
-    public function setIsValidated(FormInterface $form, InputInterface $formElements)
+    public function setIsValidated(FormInterface $form, InputInterface $formElements, string $name = null)
     {
+        if (!isset($this->prefix)) {
+            $this->prefix = $name;
+        }
         if (strtolower($this->request->getMethod()) === $form->method) {
             if ($form->method === 'post') {
                 $request = $this->decryptRequest($this->request->request->all());
@@ -272,7 +280,11 @@ abstract class AbstractFormValidation implements FormValidationInterface
     protected function decryptRequest(array $request): array
     {
         foreach ($request as $key => $value) {
-            $return[Common::decrypt($key)] = $value;
+            $name = Common::decrypt($key);
+            //dump($name, $this->prefix);
+            if (str_starts_with($name, "{$this->prefix}.") && str_ends_with($name, $this->name)) {
+                $return[str_replace("{$this->prefix}.", '', $name)] = $value;
+            }
         }
 
         return $return ?? [];
@@ -287,7 +299,7 @@ abstract class AbstractFormValidation implements FormValidationInterface
             return ['warning', str_replace('NUMBER', $this->maxWidth, $this->translator->trans($this->maxWidthMessage, [], 'suzie', $this->locale))];
         }
         if (empty($value) && $this->allowNull === false) {
-            return ['error'];
+            return ['error', $this->translator->trans($this->allowNullMessage, [], 'suzie', $this->locale)];
         }
         if ($this->filterVar !== null) {
             if ($this->filterVar === 'FILTER_VALIDATE_EMAIL') {

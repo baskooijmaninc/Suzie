@@ -186,6 +186,24 @@ abstract class AbstractSuzie implements SuzieInterface
         return $return ?? false;
     }
 
+    public function saveForm(ObjectInterface &$formElements, bool $validate = true): bool
+    {
+        dump($formElements);
+        $requestId = uniqid();
+
+        if ($this->debug === true) {
+            $this->logger->debug('Called ' . $this->name . '::save {requestId}', compact('requestId', 'formElements'));
+        }
+
+        if ($this->debug === true) {
+            $e = $this->stopwatch->start($this->name . '::save#' . $requestId, 'suzie');
+        }
+
+
+
+        return false;
+    }
+
     /**
      * @param $entity
      * @return bool
@@ -280,6 +298,13 @@ abstract class AbstractSuzie implements SuzieInterface
         }
 
         return $return ?? false;
+    }
+
+    protected function hasOne(string $relatedService, string $relatedId = null)
+    {
+        if ($relatedId === null) {
+            dump($this);
+        }
     }
 
     private function tableColType(string $type, array $columns): array

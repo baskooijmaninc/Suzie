@@ -4,6 +4,7 @@ namespace KooijmanInc\Suzie;
 
 use KooijmanInc\Suzie\FormBuilder\FormBuilderInterface;
 use KooijmanInc\Suzie\Model\Entity\EntityInterface;
+use KooijmanInc\Suzie\Object\FormObject\ObjectInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 interface SuzieInterface
@@ -17,6 +18,8 @@ interface SuzieInterface
     public function hasRecord(FormBuilderInterface $formBuilder): array|bool;
 
     public function save(EntityInterface &$entity, bool $validate = true): bool;
+
+    public function saveForm(ObjectInterface &$formElements, bool $validate = true): bool;
 
     public function checkEntityType($entity): bool;
 
