@@ -102,6 +102,11 @@ abstract class AbstractEntity implements EntityInterface
         return $this->suzie->save($this, $validate);
     }
 
+    public function saveAll(bool $validate = true): bool
+    {
+        return false;
+    }
+
     /**
      * @return bool|array
      */

@@ -21,6 +21,8 @@ interface SuzieInterface
 
     public function saveForm(ObjectInterface &$formElements, bool $validate = true): bool;
 
+    public function saveFormAll(ObjectInterface &$formElements, bool $validate = true): bool;
+
     public function checkEntityType($entity): bool;
 
     /**

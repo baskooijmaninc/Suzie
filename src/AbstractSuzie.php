@@ -54,6 +54,10 @@ abstract class AbstractSuzie implements SuzieInterface
      */
     protected iterable $tableColumns;
 
+    protected array $belongsTo = [];
+
+    protected array $hasOne = [];
+
     /**
      * @var FormBuilderInterface
      */
@@ -201,6 +205,32 @@ abstract class AbstractSuzie implements SuzieInterface
 
 
 
+        if (isset($e) && $e->isStarted()) {
+            $e->stop();
+        }
+
+        return false;
+    }
+
+    public function saveFormAll(ObjectInterface &$formElements, bool $validate = true, array &$argv = []): bool
+    {
+        dump($formElements);
+        $requestId = uniqid();
+
+        if ($this->debug === true) {
+            $this->logger->debug('Called ' . $this->name . '::save {requestId}', compact('requestId', 'formElements'));
+        }
+
+        if ($this->debug === true) {
+            $e = $this->stopwatch->start($this->name . '::save#' . $requestId, 'suzie');
+        }
+
+
+
+        if (isset($e) && $e->isStarted()) {
+            $e->stop();
+        }
+
         return false;
     }
 
@@ -300,11 +330,51 @@ abstract class AbstractSuzie implements SuzieInterface
         return $return ?? false;
     }
 
-    protected function hasOne(string $relatedService, string $relatedId = null)
+    protected function belongsTo(string $relatedService, string $relatedId = null, string $storeInId = null)
     {
         if ($relatedId === null) {
-            dump($this);
+            foreach ($relatedService::getInstance()->tableColumns as $columns) {
+                if ($columns['Key'] === "PRI") {
+                    $relatedId = $columns['Field'];
+                }
+            }
         }
+
+        if ($storeInId === null) {
+            $service = explode("\\", $relatedService);
+            $storeInId = end($service);
+        }
+
+        $this->belongsTo[$storeInId] = [
+            'service' => $relatedService,
+            'relatedId' => $relatedId,
+            'storeInId' => $storeInId
+        ];
+    }
+
+    protected function hasOne(string $relatedService, string $relatedId = null, string $storeInId = null)
+    {
+        if ($relatedId === null) {
+            if (!isset($this->tableColumns)) {
+                $this->create();
+            }
+            foreach ($this->tableColumns as $columns) {
+                if ($columns['Key'] === "PRI") {
+                    $relatedId = $columns['Field'];
+                }
+            }
+        }
+
+        if ($storeInId === null) {
+            $service = explode("\\", $relatedService);
+            $storeInId = end($service);
+        }
+
+        $this->hasOne[$storeInId] = [
+            'service' => $relatedService,
+            'relatedId' => $relatedId,
+            'storeInId' => $storeInId
+        ];
     }
 
     private function tableColType(string $type, array $columns): array

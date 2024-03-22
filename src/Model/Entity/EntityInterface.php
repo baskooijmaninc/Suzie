@@ -23,6 +23,8 @@ interface EntityInterface extends \JsonSerializable, \ArrayAccess
      */
     public function save(bool $validate = true): bool;
 
+    public function saveAll(bool $validate = true): bool;
+
     /**
      * @return bool|array
      */
